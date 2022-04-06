@@ -3,7 +3,7 @@ import {
   Container,
   Header,
   Footer,
-  Amount,
+  Price,
   LastTransaction,
   Icon,
   Title
@@ -11,7 +11,7 @@ import {
 
 interface Props {
   title: string;
-  amount: string;
+  price: string;
   lastTransaction: string;
   type: 'up' | 'down' | 'total';
 }
@@ -22,7 +22,7 @@ const icon = {
   total: 'dollar-sign'
 }
 
-export function HightLightCard({ type, title, amount, lastTransaction }: Props) {
+export function HightLightCard({ type, title, price, lastTransaction }: Props) {
   return (
     <Container type={type}>
       <Header>
@@ -30,9 +30,9 @@ export function HightLightCard({ type, title, amount, lastTransaction }: Props) 
         <Icon name={icon[type]} type={type}/>
       </Header>
       <Footer>
-        <Amount>
-          <Title type={type}>{amount}</Title>
-        </Amount>
+        <Price>
+          <Title type={type}>{price}</Title>
+        </Price>
         <LastTransaction>
           <Title type={type}>{lastTransaction}</Title>
         </LastTransaction>

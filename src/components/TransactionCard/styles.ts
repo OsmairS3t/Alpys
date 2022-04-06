@@ -7,20 +7,32 @@ interface TransactionProps {
 }
 
 export const Container = styled.View`
-  background-color: ${({ theme }) => theme.colors.shape_light};
+  background-color: ${({ theme }) => theme.colors.light};
   border-radius: 5px;
   padding: 10px 16px;
   margin-bottom: 10px;
+  justify-content: space-between;
+`;
+
+export const Header = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 export const Title = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: ${RFValue(12)}px;
-`;
+  `;
 
-export const Amount = styled.Text<TransactionProps>`
+export const Amount = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: ${RFValue(12)}px;
+  `;
+
+export const Price = styled.Text<TransactionProps>`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: ${RFValue(14)}px;
   color: ${({ theme, type }) => 
   type === 'positive' ? theme.colors.success : theme.colors.attention};
   margin-top: 2px;
@@ -30,7 +42,7 @@ export const Footer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 2px;
 `;
 
 export const Category = styled.View`

@@ -1,19 +1,18 @@
 import styled, { css } from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 interface IconsProps {
   type: 'up' | 'down';
 }
 
-interface ContainerProps {
+interface ContainerProps extends IconsProps {
   isActive: boolean;
-  type: 'up' | 'down';
 }
 
 export const Container = styled(TouchableOpacity)<ContainerProps>`
-  width: 48%;
+  width: 100%;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -32,7 +31,7 @@ export const Container = styled(TouchableOpacity)<ContainerProps>`
   `}
 `;
 
-export const Icon = styled(Feather)<IconsProps>`
+export const Icon = styled(MaterialIcons)<IconsProps>`
   font-size: ${RFValue(24)}px;
   color: ${({ theme }) => theme.colors.text};
   margin-right: 12px;

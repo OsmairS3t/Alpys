@@ -14,6 +14,7 @@ export default {
     shape: '#ffffff',
     shape_light10: 'rgba(255,255,255,0.10)',
     shape_light: 'rgba(255,255,255,0.70)',
+    light: '#ffffff',
     
     title: '#F5F2F2',
     text:'#818181',

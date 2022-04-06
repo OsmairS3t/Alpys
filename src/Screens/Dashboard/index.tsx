@@ -1,22 +1,12 @@
-import React, { useState } from 'react';
-import { Image } from 'react-native';
+import React from 'react';
 import { HightLightCard } from '../../components/HightLightCard';
 import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard';
 
 import {
   Container,
-  Titulo,
   Header,
-  UserWraper,
-  UserInfo,
-  Photo,
-  User,
-  UserGreeting,
-  UserName,
-  LogoutButton,
-  Icon,
+  LogoTipo,
   HightLightCards,
-  GroupHeaderTitle,
   Content,
   Title,
   TransactionList
@@ -31,20 +21,19 @@ export interface DataListProps extends TransactionCardProps {
   id: string;
 }
 
+const logotipo = '../../assets/logo_alpys.png';
+
 export function Dashboard() {
-  const user:User = {
-    name: 'Osmair',
-    photo: 'https://avatars.githubusercontent.com/u/12415391?v=4'
-  };
 
   const data: DataListProps[] = [
     {
       id: '1',
       type: 'positive',
-      title: "Salario",
-      amount: "R$ 10.000,00",
+      title: "Barra",
+      amount: "1 Unid.",
+      price: "R$ 22,00",
       category: {
-        name: 'Salario',
+        name: 'Vendas',
         icon: 'dollar-sign'
       },
       date: "10/01/2022"
@@ -52,22 +41,24 @@ export function Dashboard() {
     {
       id: '2',
       type: 'negative',
-      title: "Sanduiche",
-      amount: "R$ 21,00",
+      title: "Chocolate meio amargo",
+      amount: "1 Unid.",
+      price: "R$ 21,00",
       category: {
-        name: 'Alimentação',
-        icon: 'coffee'
+        name: 'Compra',
+        icon: 'dollar-sign'
       },
       date: "10/01/2022"
     },
     {
       id: '3',
-      type: 'negative',
-      title: "Aluguel",
-      amount: "R$ 800,00",
+      type: 'positive',
+      title: "Pão de mel",
+      amount: "2 Unid.",
+      price: "R$ 10,00",
       category: {
-        name: 'Casa',
-        icon: 'shopping-bag'
+        name: 'Venda',
+        icon: 'dollar-sign'
       },
       date: "10/01/2022"
     }
@@ -76,42 +67,25 @@ export function Dashboard() {
   return (
     <Container>
       <Header>
-        <UserWraper>
-          <UserInfo>
-            <Photo source={{ uri: user.photo }} />
-            <User>
-              <UserGreeting>Olá,</UserGreeting>
-              <UserName>{user.name}</UserName>
-            </User>
-          </UserInfo>
-
-          <LogoutButton onPress={() => { }}>
-            <Icon name="power" />
-          </LogoutButton>
-        </UserWraper>
-
-        <GroupHeaderTitle>
-          <Titulo>Alpys Chocolateria</Titulo>
-          <Image width={90} source={require('../../assets/logo_alpys_branco.png')} />
-        </GroupHeaderTitle>
+          <LogoTipo width={207} source={require(logotipo)} />
       </Header>
 
       <HightLightCards>
         <HightLightCard
           type="up"
-          amount="1.500,00"
+          price="1.500,00"
           title="Entradas"
           lastTransaction="Última entrada dia 05 de janeiro de 2022"
         />
         <HightLightCard
           type="down"
-          amount="-500,00"
+          price="-500,00"
           title="Saídas"
           lastTransaction="Última saida dia 06 de janeiro de 2022"
         />
         <HightLightCard
           type="total"
-          amount="1.000,00"
+          price="1.000,00"
           title="Total"
           lastTransaction="Última entrada dia 05 de janeiro de 2022"
         />
@@ -128,4 +102,3 @@ export function Dashboard() {
     </Container>
   )
 }
-

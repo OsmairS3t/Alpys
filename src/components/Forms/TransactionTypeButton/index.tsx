@@ -8,21 +8,23 @@ import {
  } from './styles';
 
 const icons = {
-  up: 'arrow-up-circle',
-  down: 'arrow-down-circle'
+  up: 'attach-money',
+  down: 'money-off'
 } 
 
 interface Props extends TouchableOpacityProps {
   type: 'up' | 'down';
   title: string;
   isActive: boolean;
+  onPress: ()=>void;
 } 
 
-export function TransactionTypeButton({title, type, isActive, ...rest}: Props) {
+export function TransactionTypeButton({title, type, isActive, onPress, ...rest}: Props) {
   return (
     <Container 
      isActive={isActive}
      type={type}
+     onPress={onPress}
      {...rest}
      >
       <Icon 

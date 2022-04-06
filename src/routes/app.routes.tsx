@@ -7,8 +7,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const { Navigator, Screen } = createBottomTabNavigator();
 
 import { Dashboard } from '../Screens/Dashboard'
-import { Clients } from '../Screens/Clients';
-import { Orders } from '../Screens/Orders';
+import { Purchases } from '../Screens/Purchases';
+import { Sales } from '../Screens/Sales';
 import { Products } from '../Screens/Products';
 
 export function AppRoutes() {
@@ -43,12 +43,12 @@ export function AppRoutes() {
         }}
       />
       <Screen 
-        name="Clientes"
-        component={Clients}
+        name="Compras"
+        component={Purchases}
         options={{
           tabBarIcon: (({ size, color }) => 
             <MaterialIcons 
-              name="supervised-user-circle"
+              name="shopping-cart"
               size={size}
               color={color}
             />
@@ -61,7 +61,7 @@ export function AppRoutes() {
         options={{
           tabBarIcon: (({ size, color }) => 
             <MaterialIcons 
-              name="stop-circle"
+              name="redeem"
               size={size}
               color={color}
             />
@@ -69,12 +69,12 @@ export function AppRoutes() {
         }}
       />
       <Screen 
-        name="Pedidos"
-        component={Orders}
+        name="Vendas"
+        component={Sales}
         options={{
           tabBarIcon: (({ size, color }) => 
             <MaterialIcons 
-              name="shopping-cart"
+              name="shopping-basket"
               size={size}
               color={color}
             />

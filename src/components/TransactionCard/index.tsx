@@ -2,8 +2,10 @@ import React from 'react';
 
 import { 
   Container,
+  Header,
   Title,
   Amount,
+  Price,
   Footer,
   Category,
   Icon,
@@ -20,6 +22,7 @@ export interface TransactionCardProps {
   type: 'positive' | 'negative';
   title: string;
   amount: string;
+  price: string;
   category: Category;
   date: string;
 }
@@ -31,12 +34,15 @@ interface Props {
 export function TransactionCard({ data }: Props) {
   return (
     <Container>
-      <Title>{data.title}</Title>
+      <Header>
+        <Title>{data.title}</Title>
+        <Amount>{data.amount}</Amount>
+      </Header>
 
-      <Amount type={data.type}>
+      <Price type={data.type}>
         {data.type === 'negative' && '- ' }
-        {data.amount}
-      </Amount>
+        {data.price}
+      </Price>
       
       <Footer>
         <Category>

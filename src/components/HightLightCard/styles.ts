@@ -30,7 +30,7 @@ export const Title = styled.Text<TypeProps>`
 
 export const Footer = styled.View``;
 
-export const Amount = styled.Text`
+export const Price = styled.Text`
   font-family: ${({ theme }) => theme.fonts.bold};
   color: ${({ theme }) => theme.colors.background};
   font-size: ${RFValue(20)}px;
