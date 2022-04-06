@@ -25,7 +25,9 @@ import {
 import { ListSales } from '../ListSales';
 
 type PropsType = 'up' | 'down';
-const lista = [
+import { ListSalesProps } from '../ListSales';
+
+/* const lista = [
   {
     client: 'Osmair',
     phone: '9402-9998',
@@ -33,7 +35,7 @@ const lista = [
     amount: '2',
     price: 10.00
   }
-]
+] */
 
 const schema = Yup.object().shape({
   client: Yup.string(),
@@ -43,6 +45,24 @@ const schema = Yup.object().shape({
 })
 
 export function Sales() {
+  const [lista, setLista] = useState<ListSalesProps[]>([
+    {
+      key: '1',
+      client: 'Osmair',
+      phone: '9402-9998',
+      product: 'Barra recheada',
+      amount: '2',
+      price: 10.00
+    },
+    {
+      key: '2',
+      client: 'Wanessa',
+      phone: '9857-5795',
+      product: 'Bombom',
+      amount: '10',
+      price: 30.00
+    }
+  ]);
   const [isModalListOpen, setIsModalListOpen] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [type, setType] = useState<PropsType>("down");
@@ -60,8 +80,12 @@ export function Sales() {
     setIsPaid(!isPaid);
   }
 
-  function handleListSales() {
+  function handOpenleListSales() {
     setIsModalListOpen(true);
+  }
+
+  function handCloseleListSales() {
+    setIsModalListOpen(false);
   }
 
   function handleSubmitSale(form: FormDataProps) {
@@ -86,7 +110,7 @@ export function Sales() {
           <GroupFields>
             <GroupTitleForm>
               <TitleForm>Vendas:</TitleForm>
-              <ListSalesButton onPress={handleListSales}>
+              <ListSalesButton onPress={handOpenleListSales}>
                 <TitleListSalesButton>Lista</TitleListSalesButton>
               </ListSalesButton>
             </GroupTitleForm>
@@ -138,7 +162,10 @@ export function Sales() {
           />
         </Form>
         <Modal visible={isModalListOpen}>
-          <ListSales listSales={lista} />
+          <ListSales 
+            listSale={lista} 
+            closeListSales={handCloseleListSales}
+          />
         </Modal>
       </Container>
     </TouchableWithoutFeedback>
