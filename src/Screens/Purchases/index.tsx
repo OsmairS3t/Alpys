@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { InputForm } from '../../components/Forms/InputForm';
 import { Button } from '../../components/Forms/Button';
 import { HeaderScreen } from '../../components/HeaderScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -30,6 +31,7 @@ const schema = Yup.object().shape({
 })
 
 export function Purchases() {
+  const dataKey = "@AlphysChoco";
   const {
     handleSubmit,
     control,
@@ -38,17 +40,44 @@ export function Purchases() {
       resolver: yupResolver(schema)
     });
 
-  function handleSubmitPurchase(form: FormDataProps) {
-    const data = {
+  async function handleSubmitPurchase(form: FormDataProps) {
+    const dataPurchase = {
       name: form.name,
       amount: form.amount,
       price: form.price
     }
-    console.log(data);
-    Alert.alert('Compra cadastrada com sucesso');
-    reset();
+
+    try {
+      const data = await AsyncStorage.getItem(dataKey);
+      const currentData = data ? JSON.parse(data) : [];
+
+      const dataFormatted = [
+        ...currentData,
+        dataPurchase
+      ]
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+      console.log(dataFormatted)
+      Alert.alert('Compra cadastrada com sucesso');
+      reset();
+
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Não foi possivel salvar');
+    }
   }
 
+  async function listPurchases() {
+    const listPurchase = await AsyncStorage.getItem(dataKey);
+    console.log(listPurchase)
+  } 
+
+/*   useEffect(() => {
+    async function loadData() {
+      const data = await AsyncStorage.getItem(dataKey);
+    }
+    loadData();
+  },[]);
+ */
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>

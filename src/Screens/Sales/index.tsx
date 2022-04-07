@@ -4,6 +4,7 @@ import { InputForm } from '../../components/Forms/InputForm';
 import { Button } from '../../components/Forms/Button';
 import { HeaderScreen } from '../../components/HeaderScreen';
 import { TransactionTypeButton } from '../../components/Forms/TransactionTypeButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -45,6 +46,7 @@ const schema = Yup.object().shape({
 })
 
 export function Sales() {
+  const dataKey = '@AlphysChoco';
   const [lista, setLista] = useState<ListSalesProps[]>([
     {
       key: '1',
