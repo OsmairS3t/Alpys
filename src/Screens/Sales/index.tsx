@@ -77,7 +77,8 @@ export function Sales() {
   });
 
   function handleChangePaid() {
-    setIsPaid(!isPaid);
+    setIsPaid(!isPaid)
+    !isPaid ? setDescriptionPaid('Pagamento Confirmado') : setDescriptionPaid('Pagamento Pendente')
   }
 
   function handOpenleListSales() {
@@ -91,15 +92,16 @@ export function Sales() {
   function handleSubmitSale(form: FormDataProps) {
     const data = {
       client: form.client,
-      product: form.product.name,
+      product: form.product,
       amount: form.amount,
       total: form.total,
-      paid: form.paid
+      paid: descriptionPaid
     }
     console.log(data);
     Alert.alert('Venda cadastrada com sucesso!');
     reset();
     setIsPaid(false);
+    setDescriptionPaid('Pagamento Pendente');
   }
 
   return (
@@ -151,7 +153,6 @@ export function Sales() {
               <TransactionTypeButton
                 isActive={isPaid}
                 title={descriptionPaid}
-                type={type}
                 onPress={handleChangePaid}
               />
             </Fields>
