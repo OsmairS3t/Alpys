@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { InputForm } from '../../components/Forms/InputForm';
 import { CategorySelectButton } from '../../components/Forms/CategorySelectButton';
@@ -14,56 +15,90 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
   Container,
+  HeaderContainer,
+  ButtonList,
+  TitleButtonList,
   Form,
   Fields,
   TitleForm
 } from './styles';
+import { ListProducts } from '../ListProducts';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('O nome é necessário'),
   price: Yup.number().required('O preço é necessário')
 })
 
+import { ListProductsProps } from '../ListProducts';
+
 export function Products() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dataKey = "@AlphysChoco-Products";
+  const [products, setProducts] = useState<ListProductsProps[]>([]);
+  const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
+  const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
   const [category, setCategory] = useState({
     key: 'category',
     name: 'Tipo'
   });
-  const {
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<FormDataProps>({
-    resolver: yupResolver(schema)
-  });
+  const { handleSubmit, control, reset, formState: { errors }} = useForm<FormDataProps>({resolver: yupResolver(schema)});
+
+  useEffect(() => {
+    async function loadData() {
+      const data = await AsyncStorage.getItem(dataKey);
+      data != null && setProducts(JSON.parse(data));
+      //console.log(data);
+    }
+    loadData;
+  },[])
 
   function closeModalCategory() {
-    setIsModalOpen(false);
+    setIsModalOpenCategory(false);
   }
 
   function openModalCategory() {
-    setIsModalOpen(true);
+    setIsModalOpenCategory(true);
   }
 
-  function handleSubmitProduct(form: FormDataProps) {
+  async function handleModalOpen() {
+    const data = await AsyncStorage.getItem(dataKey);
+    data != null && setProducts(JSON.parse(data));
+    setIsModalOpenProducts(true);
+  }
+  
+  function handleModalClose() {
+    setIsModalOpenProducts(false);
+  }
+
+  async function handleSubmitProduct(form: FormDataProps) {
     if (category.key === 'category')
       return Alert.alert('Selecione o tipo de produto.');
-
-    const data = {
-      category: form.category,
+    
+    const dataProducts = {
+      category: category.name,
       name: form.name,
       price: form.price,
       photo: form.photo
     };
-    console.log(data);
-    Alert.alert('Produto cadastrado com sucesso!');
-    reset();
-    setCategory({
-      key: 'category',
-      name: 'Tipo'
-    })
+
+    try {
+      const data = await AsyncStorage.getItem(dataKey);
+      const currentData = data ? JSON.parse(data) : [];  
+      const dataFormatted = [
+        ...currentData,
+        dataProducts
+      ]
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+      console.log(dataFormatted)
+      Alert.alert('Produto cadastrado com sucesso!');
+      setCategory({
+        key: 'category',
+        name: 'Tipo'
+      })
+      reset();
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Não foi possivel salvar');
+    }
   }
 
   return (
@@ -72,7 +107,13 @@ export function Products() {
         <HeaderScreen />
         <Form>
           <Fields>
-            <TitleForm>Produtos:</TitleForm>
+            <HeaderContainer>
+              <TitleForm>Produtos:</TitleForm>
+              <ButtonList onPress={handleModalOpen}>
+                <TitleButtonList>Lista</TitleButtonList>
+              </ButtonList>
+            </HeaderContainer>
+
             <CategorySelectButton
               title={category.name}
               onPress={openModalCategory}
@@ -107,13 +148,20 @@ export function Products() {
           />
         </Form>
 
-        <Modal visible={isModalOpen}>
+        <Modal visible={isModalOpenCategory}>
           <CategorySelect
             category={category}
             setCategory={setCategory}
             closeSelectCategory={closeModalCategory}
           />
         </Modal>
+        <Modal visible={isModalOpenProducts}>
+          <ListProducts
+            closeListProduct={handleModalClose}
+            listProducts={products}
+          />
+        </Modal>
+
       </Container>
     </TouchableWithoutFeedback>
   )

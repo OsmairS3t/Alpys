@@ -27,6 +27,9 @@ import { ListSales } from '../ListSales';
 
 type PropsType = 'up' | 'down';
 import { ListSalesProps } from '../ListSales';
+import { ProductSelectButton } from '../../components/Forms/ProductSelectButton';
+import { Products } from '../Products';
+import { ProductSelect } from '../ProductSelect';
 
 /* const lista = [
   {
@@ -65,6 +68,21 @@ export function Sales() {
       price: 30.00
     }
   ]);
+  const products = [
+    {
+      "category": "Barra Recheada",
+      "name": "Maracuja",
+      "photo": "dd",
+      "price": 3,
+    },
+    {
+      "category": "Bombom",
+      "name": "Morango",
+      "photo": "dana",
+      "price": 3,
+    },
+  ]
+  const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
   const [isModalListOpen, setIsModalListOpen] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [type, setType] = useState<PropsType>("down");
@@ -89,6 +107,14 @@ export function Sales() {
 
   function handCloseleListSales() {
     setIsModalListOpen(false);
+  }
+
+  function handleOpenModalProducts() {
+    setIsModalOpenProducts(true);
+  }
+
+  function handleCloseModalProducts() {
+    setIsModalOpenProducts(false);
   }
 
   function handleSubmitSale(form: FormDataProps) {
@@ -125,11 +151,9 @@ export function Sales() {
               autoCapitalize='characters'
               autoCorrect={false}
             />
-            <InputForm
-              placeholder='Produto'
-              name='product'
-              control={control}
-              autoCorrect={false}
+            <ProductSelectButton 
+              title="Produto"
+              onPress={handleOpenModalProducts}
             />
             <Fields>
               <Field>
@@ -168,6 +192,13 @@ export function Sales() {
           <ListSales 
             listSale={lista} 
             closeListSales={handCloseleListSales}
+          />
+        </Modal>
+
+        <Modal visible={isModalOpenProducts}>
+          <ProductSelect
+            products={products}
+            closeSelectProduct={handleCloseModalProducts}
           />
         </Modal>
       </Container>

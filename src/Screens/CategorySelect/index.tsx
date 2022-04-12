@@ -19,7 +19,7 @@ interface Category {
   name: string;
 }
 
-interface Props {
+interface ProductProps {
   category: Category;
   setCategory: (category: Category) => void;
   closeSelectCategory: () => void;
@@ -29,7 +29,7 @@ export function CategorySelect({
   category,
   setCategory,
   closeSelectCategory
-}: Props) {
+}: ProductProps) {
 
   function handleCategorySelect(category: Category) {
     setCategory(category);

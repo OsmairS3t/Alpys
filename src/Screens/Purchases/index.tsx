@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Alert, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
 import { InputForm } from '../../components/Forms/InputForm';
 import { Button } from '../../components/Forms/Button';
 import { HeaderScreen } from '../../components/HeaderScreen';
@@ -9,13 +9,19 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { FormDataProps } from '../../components/Forms/InputForm'
+import { ListPurchases } from '../ListPurchases';
 
 import {
   Container,
+  HeaderContainer,
+  ButtonList,
+  TitleButtonList,
   Form,
   Fields,
   TitleForm
 } from './styles';
+
+import { ListPurchaseProps } from '../ListPurchases';
 
 const schema = Yup.object().shape({
   name: Yup
@@ -28,17 +34,22 @@ const schema = Yup.object().shape({
     .number()
     .required('O valor é necessário')
     .typeError('Este campo é para valores numéricos. Para números decimais informar ponto(.) ao invés de vírgula(,)')
-})
+});
 
 export function Purchases() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dataKey = "@AlphysChoco";
-  const {
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors } } = useForm<FormDataProps>({
-      resolver: yupResolver(schema)
-    });
+  const [purchases, setPurchases] = useState<ListPurchaseProps[]>([]);
+  const { handleSubmit, control, reset, formState: { errors } } = useForm<FormDataProps>({resolver: yupResolver(schema)});
+  
+  useEffect(() => {
+    async function loadData() {
+      const data = await AsyncStorage.getItem(dataKey);
+      data != null && setPurchases(JSON.parse(data));
+      //console.log(data);
+    }
+    loadData;
+  },[])
 
   async function handleSubmitPurchase(form: FormDataProps) {
     const dataPurchase = {
@@ -65,26 +76,29 @@ export function Purchases() {
       Alert.alert('Não foi possivel salvar');
     }
   }
-
-  async function listPurchases() {
-    const listPurchase = await AsyncStorage.getItem(dataKey);
-    console.log(listPurchase)
-  } 
-
-/*   useEffect(() => {
-    async function loadData() {
-      const data = await AsyncStorage.getItem(dataKey);
-    }
-    loadData();
-  },[]);
- */
+  
+  async function handleModalOpen() {
+    const data = await AsyncStorage.getItem(dataKey);
+    data != null && setPurchases(JSON.parse(data));
+    setIsModalOpen(true);
+  }
+  
+  function handleModalClose() {
+    setIsModalOpen(false);
+  }
+ 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>
         <HeaderScreen />
         <Form>
           <Fields>
-            <TitleForm>Compras:</TitleForm>
+            <HeaderContainer>
+              <TitleForm>Compras:</TitleForm>
+              <ButtonList onPress={handleModalOpen}>
+                <TitleButtonList>Lista</TitleButtonList>
+              </ButtonList>
+            </HeaderContainer>
             <InputForm
               placeholder='Nome'
               name='name'
@@ -112,6 +126,12 @@ export function Purchases() {
             onPress={handleSubmit(handleSubmitPurchase)}
           />
         </Form>
+        <Modal visible={isModalOpen}>
+          <ListPurchases
+            closeListPurchase={handleModalClose}
+            listPurchase={purchases}
+          />
+        </Modal>
       </Container>
     </TouchableWithoutFeedback>
   )
