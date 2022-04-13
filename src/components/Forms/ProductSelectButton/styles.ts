@@ -10,8 +10,15 @@ export const Container = styled.TouchableOpacity.attrs({
   justify-content: space-between;
   align-items: center;
   border-radius: 5px;
-  padding: 18px 16px;
+  padding: 10px 16px;
   margin-bottom: 7px;
+`;
+
+export const GroupNameProduct = styled.View``;
+
+export const Category = styled.Text`
+  font-size: ${RFValue(10)}px;
+  margin-bottom: 0px;
 `;
 
 export const Product = styled.Text`

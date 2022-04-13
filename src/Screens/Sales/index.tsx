@@ -24,22 +24,9 @@ import {
   TitleListSalesButton
 } from './styles';
 import { ListSales } from '../ListSales';
-
-type PropsType = 'up' | 'down';
 import { ListSalesProps } from '../ListSales';
 import { ProductSelectButton } from '../../components/Forms/ProductSelectButton';
-import { Products } from '../Products';
 import { ProductSelect } from '../ProductSelect';
-
-/* const lista = [
-  {
-    client: 'Osmair',
-    phone: '9402-9998',
-    product: 'Barra recheada',
-    amount: '2',
-    price: 10.00
-  }
-] */
 
 const schema = Yup.object().shape({
   client: Yup.string(),
@@ -49,7 +36,17 @@ const schema = Yup.object().shape({
 })
 
 export function Sales() {
-  const dataKey = '@AlphysChoco';
+  const dataKey = "@AlphysChoco-Sales";
+  const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
+  const [isModalListOpen, setIsModalListOpen] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
+  const [descriptionPaid, setDescriptionPaid] = useState('Pagamento Pendente');
+  const [product, setProduct] = useState({
+    category: '',
+    name: 'Produto',
+    price: 0,
+    photo: ''
+  });
   const [lista, setLista] = useState<ListSalesProps[]>([
     {
       key: '1',
@@ -82,11 +79,6 @@ export function Sales() {
       "price": 3,
     },
   ]
-  const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
-  const [isModalListOpen, setIsModalListOpen] = useState(false);
-  const [isPaid, setIsPaid] = useState(false);
-  const [type, setType] = useState<PropsType>("down");
-  const [descriptionPaid, setDescriptionPaid] = useState('Pagamento Pendente');
   const {
     handleSubmit,
     control,
@@ -117,19 +109,43 @@ export function Sales() {
     setIsModalOpenProducts(false);
   }
 
-  function handleSubmitSale(form: FormDataProps) {
-    const data = {
+  async function handleSubmitSale(form: FormDataProps) {
+    console.log('Teste cadastro de venda');
+/*     if (product.name === 'Produto')
+    return Alert.alert('Selecione o produto.');
+
+    const dataSales = {
       client: form.client,
       product: form.product,
       amount: form.amount,
       total: form.total,
       paid: descriptionPaid
     }
-    console.log(data);
-    Alert.alert('Venda cadastrada com sucesso!');
-    reset();
-    setIsPaid(false);
-    setDescriptionPaid('Pagamento Pendente');
+
+    try {
+      const data = await AsyncStorage.getItem(dataKey);
+      const currentData = data ? JSON.parse(data) : [];  
+      const dataFormatted = [
+        ...currentData,
+        dataSales
+      ]
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+      console.log(dataFormatted)
+      Alert.alert('Venda cadastrada com sucesso!');
+      setProduct({
+        category: '',
+        name: 'Produto',
+        price: 0,
+        photo: ''
+      })
+      reset();
+      setIsPaid(false);
+      setDescriptionPaid('Pagamento Pendente');
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Não foi possivel salvar');
+    }
+ */  
   }
 
   return (
@@ -152,7 +168,8 @@ export function Sales() {
               autoCorrect={false}
             />
             <ProductSelectButton 
-              title="Produto"
+              subTitle={product.category}
+              title={product.name}
               onPress={handleOpenModalProducts}
             />
             <Fields>
@@ -197,7 +214,8 @@ export function Sales() {
 
         <Modal visible={isModalOpenProducts}>
           <ProductSelect
-            products={products}
+            product={product}
+            setProduct={setProduct}
             closeSelectProduct={handleCloseModalProducts}
           />
         </Modal>

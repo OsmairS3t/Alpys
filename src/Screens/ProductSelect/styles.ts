@@ -3,7 +3,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { Feather } from '@expo/vector-icons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-interface CategoryProps {
+interface ProductSelectProps {
   isActive: boolean;
 }
 
@@ -14,11 +14,13 @@ export const Container = styled(GestureHandlerRootView)`
 
 export const Header = styled.View`
   width: 100%;
-  height: ${RFValue(113)}px;
-  background-color: ${({ theme }) => theme.colors.primary};
+  height: ${RFValue(60)}px;
+  padding-top: 4px;
+  background-color: ${({ theme }) => theme.colors.secondary};
   align-items: center;
   justify-content: flex-end;
   padding-bottom: 19px;
+  margin-bottom: 1px;
 `;
 
 export const Title = styled.Text`
@@ -27,12 +29,14 @@ export const Title = styled.Text`
   color: ${({ theme }) => theme.colors.shape};
 `;
 
-export const ButtonProduct = styled.TouchableOpacity`
+export const ButtonProduct = styled.TouchableOpacity<ProductSelectProps>`
   width: 100%;
   padding: ${RFValue(15)}px;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme, isActive }) => 
+    isActive ? theme.colors.secondary : theme.colors.background
+  };
 `;
 
 export const Category = styled.Text`
@@ -43,6 +47,7 @@ export const Name = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
   color: ${({ theme }) => theme.colors.title};
   font-size: ${RFValue(14)}px;
+  margin-left: 10px;
 `;
 
 export const Separator = styled.View`

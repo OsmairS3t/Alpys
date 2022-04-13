@@ -14,7 +14,7 @@ interface Produto {
 export interface FormDataProps{
   client: string;
   phone: string;
-  product: Produto;
+  product: string;
   category: string;
   name: string;
   amount: number;

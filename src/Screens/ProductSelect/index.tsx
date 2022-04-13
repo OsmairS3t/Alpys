@@ -3,7 +3,7 @@ import { FlatList } from 'react-native';
 import { Button } from '../../components/Forms/Button';
 import { categories } from '../../utils/categories';
 
-/* const products = [
+const products = [
     {
       "category": "Barra Recheada",
       "name": "Maracuja",
@@ -17,7 +17,6 @@ import { categories } from '../../utils/categories';
       "price": 3,
     },
   ]
- */
 
 import { 
   Container,
@@ -38,12 +37,15 @@ interface Product {
 }
 
 interface ProductProps {
-  products: Product[];
+  product: Product;
+  setProduct: (product: Product) => void;
   closeSelectProduct: () => void;
 }
 
-export function ProductSelect({ products, closeSelectProduct }: ProductProps) {
-
+export function ProductSelect({ product, setProduct, closeSelectProduct }: ProductProps) {
+  function handleProductSelect(product: Product) {
+    setProduct(product);
+  }
   return (
     <Container>
       <Header>
@@ -56,10 +58,11 @@ export function ProductSelect({ products, closeSelectProduct }: ProductProps) {
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <ButtonProduct
-            onPress={() => {}}
+            onPress={() => handleProductSelect(item)}
+            isActive={product.name === item.name}
           >
             <Category>{item.category}</Category>
-            <Name>{item.name}</Name>
+            <Name>({item.name})</Name>
           </ButtonProduct>
         )}
         ItemSeparatorComponent={Separator}
