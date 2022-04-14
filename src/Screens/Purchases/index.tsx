@@ -4,12 +4,15 @@ import { InputForm } from '../../components/Forms/InputForm';
 import { Button } from '../../components/Forms/Button';
 import { HeaderScreen } from '../../components/HeaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { FormDataProps } from '../../components/Forms/InputForm'
-import { ListPurchases } from '../ListPurchases';
+
+import { ListPurchases } from '../../List/ListPurchases';
+import { ListPurchaseProps } from '../../List/ListPurchases';
 
 import {
   Container,
@@ -21,7 +24,6 @@ import {
   TitleForm
 } from './styles';
 
-import { ListPurchaseProps } from '../ListPurchases';
 
 const schema = Yup.object().shape({
   name: Yup
@@ -53,6 +55,7 @@ export function Purchases() {
 
   async function handleSubmitPurchase(form: FormDataProps) {
     const dataPurchase = {
+      id: uuid.v4(),
       name: form.name,
       amount: form.amount,
       price: form.price

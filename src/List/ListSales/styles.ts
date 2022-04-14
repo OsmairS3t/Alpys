@@ -86,3 +86,11 @@ export const Price= styled.Text`
   width: 100px;
   text-align: right;
 `;
+
+export const DeleteButton = styled.TouchableOpacity`
+margin-left: 10px;
+`;
+
+export const IconDelete = styled(Feather)`
+color: ${({ theme }) => theme.colors.shape};
+`;

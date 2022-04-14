@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 
 import { InputForm } from '../../components/Forms/InputForm';
 import { CategorySelectButton } from '../../components/Forms/CategorySelectButton';
 import { Button } from '../../components/Forms/Button';
 import { HeaderScreen } from '../../components/HeaderScreen';
 import { FormDataProps } from '../../components/Forms/InputForm';
-import { CategorySelect } from '../CategorySelect';
+import { CategorySelect } from '../../components/CategorySelect';
 
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
+
+import { ListProducts } from '../../List/ListProducts';
+import { ListProductsProps } from '../../List/ListProducts';
 
 import {
   Container,
@@ -22,17 +26,14 @@ import {
   Fields,
   TitleForm
 } from './styles';
-import { ListProducts } from '../ListProducts';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('O nome é necessário'),
   price: Yup.number().required('O preço é necessário')
 })
 
-import { ListProductsProps } from '../ListProducts';
-
 export function Products() {
-  const dataKey = "@AlphysChoco-Products";
+  const dataKeyProducts = "@AlphysChoco-Products";
   const [products, setProducts] = useState<ListProductsProps[]>([]);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
   const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
@@ -44,7 +45,7 @@ export function Products() {
 
   useEffect(() => {
     async function loadData() {
-      const data = await AsyncStorage.getItem(dataKey);
+      const data = await AsyncStorage.getItem(dataKeyProducts);
       data != null && setProducts(JSON.parse(data));
       //console.log(data);
     }
@@ -60,7 +61,7 @@ export function Products() {
   }
 
   async function handleModalOpen() {
-    const data = await AsyncStorage.getItem(dataKey);
+    const data = await AsyncStorage.getItem(dataKeyProducts);
     data != null && setProducts(JSON.parse(data));
     setIsModalOpenProducts(true);
   }
@@ -74,6 +75,7 @@ export function Products() {
       return Alert.alert('Selecione o tipo de produto.');
     
     const dataProducts = {
+      id: uuid.v4(),
       category: category.name,
       name: form.name,
       price: form.price,
@@ -81,13 +83,13 @@ export function Products() {
     };
 
     try {
-      const data = await AsyncStorage.getItem(dataKey);
+      const data = await AsyncStorage.getItem(dataKeyProducts);
       const currentData = data ? JSON.parse(data) : [];  
       const dataFormatted = [
         ...currentData,
         dataProducts
       ]
-      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+      await AsyncStorage.setItem(dataKeyProducts, JSON.stringify(dataFormatted));
       console.log(dataFormatted)
       Alert.alert('Produto cadastrado com sucesso!');
       setCategory({

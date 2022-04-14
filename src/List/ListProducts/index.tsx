@@ -20,16 +20,12 @@ import {
     FooterTotal
 } from './styles';
 
-interface Category {
-    key: string;
-    name: string;
-}
-
 export interface ListProductsProps {
-    category: Category;
+    id: string;
+    category: string;
     name: string;
-    amount: number;
     price: number;
+    photo: string;
 }
 
 interface Props {
@@ -41,19 +37,9 @@ export function ListProducts({ listProducts, closeListProduct }: Props) {
     const dataKey = "@AlphysChoco-Product";
     const totalProduct = 100;
 
-    useEffect(() => {
-        async function loadProducts() {
-            //const dataProducts = await AsyncStorage.getItem(dataKey);
-            //const arrayProducts = JSON.stringify(dataProducts);
-            //console.log(arrayProducts);
-        }
-        loadProducts;
-    },[]);
-
     async function handleDeleteProduct(name: string) {
         try {
             const data = await AsyncStorage.getItem(dataKey);
-            
             await AsyncStorage.removeItem(dataKey);
             //Alert.alert(`${name} deletado ja.`);
             return true;
@@ -81,7 +67,6 @@ export function ListProducts({ listProducts, closeListProduct }: Props) {
                     <ListProductTotal>
                         <ProductCategory>{item.category}</ProductCategory>
                         <ProductName>({item.name})</ProductName>
-                        <Amount>{item.amount}</Amount>
                         <Price>R$ {item.price},00</Price>
                         <DeleteButton onPress={() => handleDeleteProduct(item.name)}>
                             <IconDelete name="trash-2" size={20}/>

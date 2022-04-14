@@ -1,22 +1,24 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { FlatList } from 'react-native';
-import { Button } from '../../components/Forms/Button';
-import { categories } from '../../utils/categories';
+import { Button } from '../Forms/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const products = [
+/* const products = [
     {
+      "id": "fjsdçafjsa",
       "category": "Barra Recheada",
       "name": "Maracuja",
       "photo": "dd",
       "price": 3,
     },
     {
+      "id": "fjsdçafjsfsdfsd",
       "category": "Bombom",
       "name": "Morango",
       "photo": "dana",
       "price": 3,
     },
-  ]
+  ] */
 
 import { 
   Container,
@@ -29,37 +31,42 @@ import {
   Footer
  } from './styles';
 
-interface Product {
+interface ProductProps {
+    id: string;
     category: string;
     name: string;
     price: number;
     photo: string;
 }
 
-interface ProductProps {
-  product: Product;
-  setProduct: (product: Product) => void;
+interface Props {
+  product: ProductProps;
+  setProduct: (product: ProductProps) => void;
+  listProducts: ProductProps[];
   closeSelectProduct: () => void;
 }
 
-export function ProductSelect({ product, setProduct, closeSelectProduct }: ProductProps) {
-  function handleProductSelect(product: Product) {
+export function ProductSelect({ product, setProduct, listProducts, closeSelectProduct }: Props) {
+  console.log(`Lista Products: ${listProducts}`);
+
+  function handleProductSelect(product: ProductProps) {
     setProduct(product);
   }
+
   return (
     <Container>
       <Header>
-        <Title>Produto</Title>
+        <Title>Produtos</Title>
       </Header>
 
       <FlatList 
-        data={products}
+        data={listProducts}
         style={{ flex: 1, width: '100%'}}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ButtonProduct
             onPress={() => handleProductSelect(item)}
-            isActive={product.name === item.name}
+            isActive={product.id === item.id}
           >
             <Category>{item.category}</Category>
             <Name>({item.name})</Name>
