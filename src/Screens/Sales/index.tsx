@@ -55,43 +55,6 @@ export function Sales() {
     photo: ''
   });
 
-  /*    
-    const [sales, setSales] = useState<ListSalesProps[]>([
-      {
-        id: '1',
-        client: 'Osmair',
-        phone: '9402-9998',
-        product: 'Barra recheada',
-        amount: '2',
-        price: 10.00
-      },
-      {
-        id: '2',
-        client: 'Wanessa',
-        phone: '9857-5795',
-        product: 'Bombom',
-        amount: '10',
-        price: 30.00
-      }
-    ]);
-    const [products, setProducts] = useState<ListProductsProps[]>([
-      {
-        "id":"jfdsfjsadç",
-        "category": "Barra Recheada",
-        "name": "Maracuja",
-        "photo": "dd",
-        "price": 3,
-      },
-      {
-        "id":"jfdsfjsadads",
-        "category": "Bombom",
-        "name": "Morango",
-        "photo": "dana",
-        "price": 3,
-      },
-    ]);
-   */
-
   const { handleSubmit, control, reset, formState: { errors }
   } = useForm<FormDataProps>();
 
@@ -220,6 +183,7 @@ export function Sales() {
         <Modal visible={isModalListOpen}>
           <ListSales
             listSale={sales}
+            setListSale={setSales}
             closeListSales={handCloseleListSales}
           />
         </Modal>

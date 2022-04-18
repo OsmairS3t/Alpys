@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HeaderScreen } from '../../components/HeaderScreen';
@@ -8,18 +8,19 @@ import {
   Header,
   Title,
   ButtonBack,
-  TitleButtonBack,
   Icon,
   ListSalesTotal,
-  GroupTitle,
   ClientName,
-  ClientPhone,
   GroupList,
   ProductName,
   Amount,
+  Paid,
   Price,
+  GroupButton,
   DeleteButton,
-  IconDelete
+  IconDelete,
+  EditButton,
+  IconEdit
 } from './styles';
 
 export interface ListSalesProps {
@@ -28,21 +29,33 @@ export interface ListSalesProps {
   phone: string;
   product: string;
   amount: string;
-  price: number;
+  total: number;
+  paid: string;
 }
 
 interface Props {
   listSale: ListSalesProps[];
+  setListSale: (listSale: ListSalesProps[]) => void;
   closeListSales: () => void;
 }
-export function ListSales({ listSale, closeListSales }: Props) {
+export function ListSales({ listSale, setListSale, closeListSales }: Props) {
   const dataKeySales = "@AlphysChoco-Sales";
 
   async function handleDeleteSale(id: string) {
+    let descriptionDeleted = '';
     try {
-      const data = await AsyncStorage.getItem(dataKeySales);
+      const currentData = await AsyncStorage.getItem(dataKeySales);
+      let newData = currentData !== null && JSON.parse(currentData);
+      for(let i=0; i<newData.length; i++) {
+        if(newData[i].id === id) {
+          descriptionDeleted = `${newData[i].product} de ${newData[i].client}`;
+          newData.splice(i, 1);
+        }
+      }
       await AsyncStorage.removeItem(dataKeySales);
-      Alert.alert(`${id} deletado com sucesso.`);
+      await AsyncStorage.setItem(dataKeySales, JSON.stringify(newData));
+      setListSale(newData);
+      Alert.alert(`${descriptionDeleted} excluído com sucesso.`);
       return true;
     }
     catch (exception) {
@@ -65,18 +78,21 @@ export function ListSales({ listSale, closeListSales }: Props) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ListSalesTotal>
-            <GroupTitle>
-              <ClientName>{item.client}</ClientName>
-              <ClientPhone>{item.phone}</ClientPhone>
-            </GroupTitle>
             <GroupList>
-              <Amount>{item.amount}</Amount>
-              <ProductName>{item.product}</ProductName>
-              <Price>R$ {item.price},00</Price>
-              <DeleteButton onPress={() => handleDeleteSale(item.id)}>
-                <IconDelete name="trash-2" size={20} />
-              </DeleteButton>
+              <ClientName>Cliente: {item.client}</ClientName>
+              <ProductName>Produto: {item.product}</ProductName>
+              <Amount>Quantidade: {item.amount}</Amount>
+              <Price>Total: R$ {item.total}</Price>
+              <Paid>{item.paid}</Paid>
             </GroupList>
+            <GroupButton>
+              <DeleteButton onPress={() => handleDeleteSale(item.id)}>
+                <IconDelete name="trash-2" size={30} />
+              </DeleteButton>
+              <EditButton onPress={() => handleDeleteSale(item.id)}>
+                <IconEdit name="edit" size={30} />
+              </EditButton>
+            </GroupButton>
           </ListSalesTotal>
         )}
       />

@@ -31,12 +31,6 @@ export const Icon = styled(Feather)`
   color: ${({ theme }) => theme.colors.shape};
 `;
 
-export const TitleButtonBack = styled.Text`
-  font-size: ${RFValue(14)}px;
-  font-family: ${({ theme }) => theme.fonts.regular};
-  color: ${({ theme }) => theme.colors.shape};
-`;
-
 export const ListSalesTotal = styled.View`
   padding: 4px 24px;
   width: 100%;
@@ -45,33 +39,21 @@ export const ListSalesTotal = styled.View`
   border-style: solid;
 `;
 
-export const GroupTitle = styled.View`
-  flex-direction: row;
-  padding: 0px;
-`;
+export const GroupList = styled.View``;
 
 export const ClientName = styled.Text`
   font-size: ${RFValue(16)}px;
   color: ${({ theme }) => theme.colors.title};
-  width: 200px;
-  `;
-
-export const ClientPhone = styled.Text`
-  font-size: ${RFValue(16)}px;
-  color: ${({ theme }) => theme.colors.title};
-  width: 146px;
 `;
 
-export const GroupList = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
+export const Paid = styled.Text`
+  color: ${({theme})=>theme.colors.success};
 `;
 
 export const Amount = styled.Text`
   color: ${({ theme }) => theme.colors.title};
   margin-right: 5px;
   font-size: ${RFValue(14)}px;
-  width: 40px;
 `;
 
 export const ProductName = styled.Text`
@@ -83,14 +65,24 @@ export const ProductName = styled.Text`
 export const Price= styled.Text`
   color: ${({ theme }) => theme.colors.title};
   font-size: ${RFValue(14)}px;
-  width: 100px;
-  text-align: right;
+`;
+
+export const GroupButton = styled.View`
+  flex-direction: row;
 `;
 
 export const DeleteButton = styled.TouchableOpacity`
-margin-left: 10px;
+  margin: 15px 0px;
+`;
+
+export const EditButton = styled.TouchableOpacity`
+  margin: 15px;
 `;
 
 export const IconDelete = styled(Feather)`
-color: ${({ theme }) => theme.colors.shape};
+  color: ${({ theme }) => theme.colors.shape};
+`;
+
+export const IconEdit = styled(Feather)`
+  color: ${({ theme }) => theme.colors.shape};
 `;
