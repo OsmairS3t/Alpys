@@ -13,6 +13,7 @@ import { FormDataProps } from '../../components/Forms/InputForm'
 
 import { ListPurchases } from '../../List/ListPurchases';
 import { ListPurchaseProps } from '../../List/ListPurchases';
+import { keyPurchase } from '../../utils/keyStorage';
 
 import {
   Container,
@@ -40,13 +41,12 @@ const schema = Yup.object().shape({
 
 export function Purchases() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const dataKey = "@AlphysChoco";
   const [purchases, setPurchases] = useState<ListPurchaseProps[]>([]);
   const { handleSubmit, control, reset, formState: { errors } } = useForm<FormDataProps>({resolver: yupResolver(schema)});
   
   useEffect(() => {
     async function loadData() {
-      const data = await AsyncStorage.getItem(dataKey);
+      const data = await AsyncStorage.getItem(keyPurchase);
       data != null && setPurchases(JSON.parse(data));
       //console.log(data);
     }
@@ -62,14 +62,14 @@ export function Purchases() {
     }
 
     try {
-      const data = await AsyncStorage.getItem(dataKey);
+      const data = await AsyncStorage.getItem(keyPurchase);
       const currentData = data ? JSON.parse(data) : [];
 
       const dataFormatted = [
         ...currentData,
         dataPurchase
       ]
-      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+      await AsyncStorage.setItem(keyPurchase, JSON.stringify(dataFormatted));
       console.log(dataFormatted)
       Alert.alert('Compra cadastrada com sucesso');
       reset();
@@ -81,7 +81,7 @@ export function Purchases() {
   }
   
   async function handleModalOpen() {
-    const data = await AsyncStorage.getItem(dataKey);
+    const data = await AsyncStorage.getItem(keyPurchase);
     data != null && setPurchases(JSON.parse(data));
     setIsModalOpen(true);
   }

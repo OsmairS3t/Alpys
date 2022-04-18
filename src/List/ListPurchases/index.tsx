@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import { Alert, FlatList } from 'react-native';
 import { HeaderScreen } from '../../components/HeaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { keyPurchase } from '../../utils/keyStorage';
 
 import {
     Container,
@@ -31,12 +32,11 @@ interface Props {
 }
 
 export function ListPurchases({ listPurchase, closeListPurchase }: Props) {
-    const dataKey = "@AlphysChoco";
     const totalPurchase = 100;
 
     useEffect(() => {
         async function loadPurchases() {
-            //const dataPurchases = await AsyncStorage.getItem(dataKey);
+            //const dataPurchases = await AsyncStorage.getItem(keyPurchase);
             //const arrayPurchases = JSON.stringify(dataPurchases);
             //console.log(arrayPurchases);
         }
@@ -45,9 +45,9 @@ export function ListPurchases({ listPurchase, closeListPurchase }: Props) {
 
     async function handleDeletePurchase(name: string) {
         try {
-            const data = await AsyncStorage.getItem(dataKey);
+            const data = await AsyncStorage.getItem(keyPurchase);
             
-            await AsyncStorage.removeItem(dataKey);
+            await AsyncStorage.removeItem(keyPurchase);
             //Alert.alert(`${name} deletado ja.`);
             return true;
         }

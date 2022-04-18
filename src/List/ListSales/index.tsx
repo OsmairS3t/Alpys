@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HeaderScreen } from '../../components/HeaderScreen';
+import { keySale } from '../../utils/keyStorage';
 
 import {
   Container,
@@ -39,12 +40,11 @@ interface Props {
   closeListSales: () => void;
 }
 export function ListSales({ listSale, setListSale, closeListSales }: Props) {
-  const dataKeySales = "@AlphysChoco-Sales";
 
   async function handleDeleteSale(id: string) {
     let descriptionDeleted = '';
     try {
-      const currentData = await AsyncStorage.getItem(dataKeySales);
+      const currentData = await AsyncStorage.getItem(keySale);
       let newData = currentData !== null && JSON.parse(currentData);
       for(let i=0; i<newData.length; i++) {
         if(newData[i].id === id) {
@@ -52,8 +52,8 @@ export function ListSales({ listSale, setListSale, closeListSales }: Props) {
           newData.splice(i, 1);
         }
       }
-      await AsyncStorage.removeItem(dataKeySales);
-      await AsyncStorage.setItem(dataKeySales, JSON.stringify(newData));
+      await AsyncStorage.removeItem(keySale);
+      await AsyncStorage.setItem(keySale, JSON.stringify(newData));
       setListSale(newData);
       Alert.alert(`${descriptionDeleted} excluído com sucesso.`);
       return true;
@@ -82,7 +82,7 @@ export function ListSales({ listSale, setListSale, closeListSales }: Props) {
               <ClientName>Cliente: {item.client}</ClientName>
               <ProductName>Produto: {item.product}</ProductName>
               <Amount>Quantidade: {item.amount}</Amount>
-              <Price>Total: R$ {item.total}</Price>
+              <Price>Total: R$ {item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</Price>
               <Paid>{item.paid}</Paid>
             </GroupList>
             <GroupButton>

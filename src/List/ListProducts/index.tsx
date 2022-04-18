@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import { Alert, FlatList } from 'react-native';
 import { HeaderScreen } from '../../components/HeaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { keyProduct } from '../../utils/keyStorage';
 
 import {
     Container,
@@ -34,13 +35,12 @@ interface Props {
 }
 
 export function ListProducts({ listProducts, closeListProduct }: Props) {
-    const dataKey = "@AlphysChoco-Product";
     const totalProduct = 100;
 
     async function handleDeleteProduct(name: string) {
         try {
-            const data = await AsyncStorage.getItem(dataKey);
-            await AsyncStorage.removeItem(dataKey);
+            const data = await AsyncStorage.getItem(keyProduct);
+            await AsyncStorage.removeItem(keyProduct);
             //Alert.alert(`${name} deletado ja.`);
             return true;
         }
@@ -62,13 +62,13 @@ export function ListProducts({ listProducts, closeListProduct }: Props) {
             <FlatList
                 data={listProducts}
                 style={{ flex: 1, width: '100%' }}
-                keyExtractor={(item) => item.name}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <ListProductTotal>
                         <ProductCategory>{item.category}</ProductCategory>
                         <ProductName>({item.name})</ProductName>
                         <Price>R$ {item.price},00</Price>
-                        <DeleteButton onPress={() => handleDeleteProduct(item.name)}>
+                        <DeleteButton onPress={() => handleDeleteProduct(item.id)}>
                             <IconDelete name="trash-2" size={20}/>
                         </DeleteButton>
                     </ListProductTotal>

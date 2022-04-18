@@ -19,6 +19,9 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { keySale } from '../../utils/keyStorage';
+import { keyProduct } from '../../utils/keyStorage';
+
 import {
   Container,
   Form,
@@ -39,8 +42,6 @@ const schema = Yup.object().shape({
 })
 
 export function Sales() {
-  const dataKeyProducts = "@AlphysChoco-Products";
-  const dataKeySales = "@AlphysChoco-Sales";
   const [sales, setSales] = useState<ListSalesProps[]>([]);
   const [products, setProducts] = useState<ListProductsProps[]>([]);
   const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
@@ -64,7 +65,7 @@ export function Sales() {
   }
 
   async function handOpenleListSales() {
-    const dataRequestSales = await AsyncStorage.getItem(dataKeySales);
+    const dataRequestSales = await AsyncStorage.getItem(keySale);
     dataRequestSales != null && setSales(JSON.parse(dataRequestSales));
     setIsModalListOpen(true);
   }
@@ -74,7 +75,7 @@ export function Sales() {
   }
 
   async function handleOpenModalProducts() {
-    const dataProducts = await AsyncStorage.getItem(dataKeyProducts);
+    const dataProducts = await AsyncStorage.getItem(keyProduct);
     dataProducts != null && setProducts(JSON.parse(dataProducts));
     setIsModalOpenProducts(true);
   }
@@ -97,13 +98,13 @@ export function Sales() {
     }
 
     try {
-      const data = await AsyncStorage.getItem(dataKeySales);
+      const data = await AsyncStorage.getItem(keySale);
       const currentData = data ? JSON.parse(data) : [];
       const dataFormatted = [
         ...currentData,
         dataSales
       ]
-      await AsyncStorage.setItem(dataKeySales, JSON.stringify(dataFormatted));
+      await AsyncStorage.setItem(keySale, JSON.stringify(dataFormatted));
       console.log(dataFormatted)
       Alert.alert('Venda cadastrada com sucesso!');
       setObjProduct({

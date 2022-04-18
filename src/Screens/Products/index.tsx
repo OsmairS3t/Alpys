@@ -17,6 +17,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ListProducts } from '../../List/ListProducts';
 import { ListProductsProps } from '../../List/ListProducts';
 
+import { keyProduct } from '../../utils/keyStorage';
+
 import {
   Container,
   HeaderContainer,
@@ -33,7 +35,6 @@ const schema = Yup.object().shape({
 })
 
 export function Products() {
-  const dataKeyProducts = "@AlphysChoco-Products";
   const [products, setProducts] = useState<ListProductsProps[]>([]);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
   const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
@@ -45,7 +46,7 @@ export function Products() {
 
   useEffect(() => {
     async function loadData() {
-      const data = await AsyncStorage.getItem(dataKeyProducts);
+      const data = await AsyncStorage.getItem(keyProduct);
       data != null && setProducts(JSON.parse(data));
       //console.log(data);
     }
@@ -61,7 +62,7 @@ export function Products() {
   }
 
   async function handleModalOpen() {
-    const data = await AsyncStorage.getItem(dataKeyProducts);
+    const data = await AsyncStorage.getItem(keyProduct);
     data != null && setProducts(JSON.parse(data));
     setIsModalOpenProducts(true);
   }
@@ -83,13 +84,13 @@ export function Products() {
     };
 
     try {
-      const data = await AsyncStorage.getItem(dataKeyProducts);
+      const data = await AsyncStorage.getItem(keyProduct);
       const currentData = data ? JSON.parse(data) : [];  
       const dataFormatted = [
         ...currentData,
         dataProducts
       ]
-      await AsyncStorage.setItem(dataKeyProducts, JSON.stringify(dataFormatted));
+      await AsyncStorage.setItem(keyProduct, JSON.stringify(dataFormatted));
       console.log(dataFormatted)
       Alert.alert('Produto cadastrado com sucesso!');
       setCategory({
