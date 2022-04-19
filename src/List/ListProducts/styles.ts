@@ -67,17 +67,3 @@ export const IconDelete = styled(Feather)`
 color: ${({ theme }) => theme.colors.shape};
 `;
 
-export const FooterTotal = styled.View`
-  border-top-width: 1px;
-  border-color: ${({ theme })=> theme.colors.text};
-  border-style: dotted;
-  flex-direction: row;
-  justify-content: flex-end;
-  padding: 0px 24px 60px 24px;
-`;
-
-export const TotalProduct = styled.Text`
-  color: ${({ theme }) => theme.colors.shape};
-  font-size: ${RFValue(14)}px;
-  font-family: ${({ theme }) => theme.fonts.bold};
-`;

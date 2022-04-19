@@ -21,7 +21,7 @@ export interface FormDataProps{
   amount: number;
   price: number;
   total: number;
-  paid: boolean;
+  ispaid: boolean;
   photo: string;
 }
 
@@ -35,7 +35,7 @@ interface Props extends TextInputProps {
         'amount' | 
         'price' | 
         'total' | 
-        'paid' | 
+        'ispaid' | 
         'photo';
   error?: string | undefined;
 }

@@ -21,7 +21,9 @@ import {
   DeleteButton,
   IconDelete,
   EditButton,
-  IconEdit
+  IconEdit,
+  FooterTotal,
+  TotalSales
 } from './styles';
 
 export interface ListSalesProps {
@@ -30,24 +32,26 @@ export interface ListSalesProps {
   phone: string;
   product: string;
   amount: string;
-  total: number;
-  paid: string;
+  total: string;
+  ispaid: boolean;
+  datesale: Date;
 }
 
 interface Props {
   listSale: ListSalesProps[];
   setListSale: (listSale: ListSalesProps[]) => void;
   closeListSales: () => void;
+  totalSale: string;
 }
-export function ListSales({ listSale, setListSale, closeListSales }: Props) {
+export function ListSales({ listSale, setListSale, closeListSales, totalSale }: Props) {
 
   async function handleDeleteSale(id: string) {
     let descriptionDeleted = '';
     try {
       const currentData = await AsyncStorage.getItem(keySale);
       let newData = currentData !== null && JSON.parse(currentData);
-      for(let i=0; i<newData.length; i++) {
-        if(newData[i].id === id) {
+      for (let i = 0; i < newData.length; i++) {
+        if (newData[i].id === id) {
           descriptionDeleted = `${newData[i].product} de ${newData[i].client}`;
           newData.splice(i, 1);
         }
@@ -62,6 +66,27 @@ export function ListSales({ listSale, setListSale, closeListSales }: Props) {
       return false;
     }
   }
+
+  async function handleEditSale(id: string) {
+    const [dataEditSale, setDataEditSale] = useState<ListSalesProps[]>([]);
+    let descriptionEditted = '';
+    try {
+      const response = await AsyncStorage.getItem(keySale);
+      response && setDataEditSale(JSON.parse(response));
+      let saleFinded:ListSalesProps = dataEditSale.find(item => item.id === id);
+      const newDataEditSale:ListSalesProps[] = dataEditSale.filter((item) => item.id !== id);
+      const paied = saleFinded.ispaid;
+      saleFinded.ispaid = !paied;
+      
+      //console.log(newDataEditSale)
+      
+      return true;
+    }
+    catch (exception) {
+      return false;
+    }
+  }
+
   return (
     <Container>
       <HeaderScreen />
@@ -81,22 +106,24 @@ export function ListSales({ listSale, setListSale, closeListSales }: Props) {
             <GroupList>
               <ClientName>Cliente: {item.client}</ClientName>
               <ProductName>Produto: {item.product}</ProductName>
-              <Amount>Quantidade: {item.amount}</Amount>
-              <Price>Total: R$ {item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</Price>
-              <Paid>{item.paid}</Paid>
+              <Amount>Quantidade: {item.amount}    Data: {item.datesale}</Amount>
+              <Price>Total: {item.total}</Price>
             </GroupList>
             <GroupButton>
               <DeleteButton onPress={() => handleDeleteSale(item.id)}>
                 <IconDelete name="trash-2" size={30} />
               </DeleteButton>
-              <EditButton onPress={() => handleDeleteSale(item.id)}>
+              <EditButton onPress={() => handleEditSale(item.id)}>
                 <IconEdit name="edit" size={30} />
+                <Paid isPaid={item.ispaid}>{item.ispaid ? 'Pagamento Confirmado' : 'Pagamento Pendente'}</Paid>
               </EditButton>
             </GroupButton>
           </ListSalesTotal>
         )}
       />
-
+      <FooterTotal>
+        <TotalSales>Total: {totalSale}</TotalSales>
+      </FooterTotal>
     </Container>
   )
 }

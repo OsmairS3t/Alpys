@@ -21,34 +21,35 @@ import {
 } from './styles';
 
 export interface ListPurchaseProps {
+    id: string;
     name: string;
     amount: number;
-    price: number;
+    price: string;
+    datepurchase: Date;
 }
 
 interface Props {
     listPurchase: ListPurchaseProps[];
+    setListPurchase: (listPurchase: ListPurchaseProps[]) => void;
     closeListPurchase: () => void;
+    totalPurchases: string;
 }
 
-export function ListPurchases({ listPurchase, closeListPurchase }: Props) {
-    const totalPurchase = 100;
+export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase, totalPurchases }: Props) {
 
-    useEffect(() => {
-        async function loadPurchases() {
-            //const dataPurchases = await AsyncStorage.getItem(keyPurchase);
-            //const arrayPurchases = JSON.stringify(dataPurchases);
-            //console.log(arrayPurchases);
-        }
-        loadPurchases;
-    },[]);
-
-    async function handleDeletePurchase(name: string) {
+    async function handleDeletePurchase(id: string, name: string) {
         try {
-            const data = await AsyncStorage.getItem(keyPurchase);
-            
+            Alert.alert(`Tem certeza que deseja deletar ${name}.?`);
+            const currentData = await AsyncStorage.getItem(keyPurchase);
+            let newData = currentData !== null && JSON.parse(currentData);
+            for(let i=0; i<newData.length; i++) {
+                if(newData[i].id === id) {
+                  newData.splice(i, 1);
+                }
+            }    
             await AsyncStorage.removeItem(keyPurchase);
-            //Alert.alert(`${name} deletado ja.`);
+            await AsyncStorage.setItem(keyPurchase, JSON.stringify(newData));
+            setListPurchase(newData);
             return true;
         }
         catch(exception) {
@@ -69,20 +70,20 @@ export function ListPurchases({ listPurchase, closeListPurchase }: Props) {
             <FlatList
                 data={listPurchase}
                 style={{ flex: 1, width: '100%' }}
-                keyExtractor={(item) => item.name}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <ListPurchaseTotal>
                         <PurchaseName>{item.name}</PurchaseName>
                         <Amount>{item.amount}</Amount>
-                        <Price>R$ {item.price},00</Price>
-                        <DeleteButton onPress={() => handleDeletePurchase(item.name)}>
+                        <Price>{item.price}</Price>
+                        <DeleteButton onPress={() => handleDeletePurchase(item.id, item.name)}>
                             <IconDelete name="trash-2" size={20}/>
                         </DeleteButton>
                     </ListPurchaseTotal>
                 )}
             />
             <FooterTotal>
-                <TotalPurchases>Total: {totalPurchase},00</TotalPurchases>
+                <TotalPurchases>Total: {totalPurchases}</TotalPurchases>
             </FooterTotal>
         </Container>
     )

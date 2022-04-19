@@ -15,33 +15,40 @@ import {
     ProductName,
     Amount,
     Price,
-    TotalProduct,
     DeleteButton,
     IconDelete,
-    FooterTotal
 } from './styles';
 
 export interface ListProductsProps {
     id: string;
     category: string;
     name: string;
-    price: number;
+    price: string;
     photo: string;
 }
 
 interface Props {
-    listProducts: ListProductsProps[];
+    listProduct: ListProductsProps[];
+    setListProduct: (listProducts: ListProductsProps[]) => void;
     closeListProduct: () => void;
 }
 
-export function ListProducts({ listProducts, closeListProduct }: Props) {
+export function ListProducts({ listProduct, setListProduct, closeListProduct }: Props) {
     const totalProduct = 100;
 
-    async function handleDeleteProduct(name: string) {
+    async function handleDeleteProduct(id: string, category: string, name: string) {
         try {
-            const data = await AsyncStorage.getItem(keyProduct);
+            Alert.alert(`Tem certeza que deseja excluir ${name}.?`);
+            const currentData = await AsyncStorage.getItem(keyProduct);
+            let newData = currentData !== null && JSON.parse(currentData);
+            for(let i=0; i<newData.length; i++) {
+                if(newData[i].id === id) {
+                  newData.splice(i, 1);
+                }
+            }    
             await AsyncStorage.removeItem(keyProduct);
-            //Alert.alert(`${name} deletado ja.`);
+            await AsyncStorage.setItem(keyProduct, JSON.stringify(newData));
+            setListProduct(newData);
             return true;
         }
         catch(exception) {
@@ -60,23 +67,20 @@ export function ListProducts({ listProducts, closeListProduct }: Props) {
             </Header>
 
             <FlatList
-                data={listProducts}
+                data={listProduct}
                 style={{ flex: 1, width: '100%' }}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <ListProductTotal>
                         <ProductCategory>{item.category}</ProductCategory>
                         <ProductName>({item.name})</ProductName>
-                        <Price>R$ {item.price},00</Price>
-                        <DeleteButton onPress={() => handleDeleteProduct(item.id)}>
+                        <Price>{item.price}</Price>
+                        <DeleteButton onPress={() => handleDeleteProduct(item.id, item.category, item. name)}>
                             <IconDelete name="trash-2" size={20}/>
                         </DeleteButton>
                     </ListProductTotal>
                 )}
             />
-            <FooterTotal>
-                <TotalProduct>Total: {totalProduct},00</TotalProduct>
-            </FooterTotal>
         </Container>
     )
 }

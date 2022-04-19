@@ -35,7 +35,7 @@ const schema = Yup.object().shape({
 })
 
 export function Products() {
-  const [products, setProducts] = useState<ListProductsProps[]>([]);
+  const [listProducts, setListProducts] = useState<ListProductsProps[]>([]);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
   const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
   const [category, setCategory] = useState({
@@ -43,15 +43,6 @@ export function Products() {
     name: 'Tipo'
   });
   const { handleSubmit, control, reset, formState: { errors }} = useForm<FormDataProps>({resolver: yupResolver(schema)});
-
-  useEffect(() => {
-    async function loadData() {
-      const data = await AsyncStorage.getItem(keyProduct);
-      data != null && setProducts(JSON.parse(data));
-      //console.log(data);
-    }
-    loadData;
-  },[])
 
   function closeModalCategory() {
     setIsModalOpenCategory(false);
@@ -61,9 +52,24 @@ export function Products() {
     setIsModalOpenCategory(true);
   }
 
-  async function handleModalOpen() {
-    const data = await AsyncStorage.getItem(keyProduct);
-    data != null && setProducts(JSON.parse(data));
+  async function handleModalProductOpen() {
+    const response = await AsyncStorage.getItem(keyProduct);
+    const dataProduct = response ? JSON.parse(response) : [];
+    const dataProductFormatted: ListProductsProps[] = dataProduct
+    .map((item: ListProductsProps) => {
+      const price = Number(item.price).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+      return {
+        id: item.id,
+        category: item.category,
+        name: item.name,
+        price,
+        photo: item.photo
+      }
+    });
+    setListProducts(dataProductFormatted);
     setIsModalOpenProducts(true);
   }
   
@@ -91,7 +97,6 @@ export function Products() {
         dataProducts
       ]
       await AsyncStorage.setItem(keyProduct, JSON.stringify(dataFormatted));
-      console.log(dataFormatted)
       Alert.alert('Produto cadastrado com sucesso!');
       setCategory({
         key: 'category',
@@ -112,7 +117,7 @@ export function Products() {
           <Fields>
             <HeaderContainer>
               <TitleForm>Produtos:</TitleForm>
-              <ButtonList onPress={handleModalOpen}>
+              <ButtonList onPress={handleModalProductOpen}>
                 <TitleButtonList>Lista</TitleButtonList>
               </ButtonList>
             </HeaderContainer>
@@ -160,8 +165,9 @@ export function Products() {
         </Modal>
         <Modal visible={isModalOpenProducts}>
           <ListProducts
+            listProduct={listProducts}
+            setListProduct={setListProducts}
             closeListProduct={handleModalClose}
-            listProducts={products}
           />
         </Modal>
 

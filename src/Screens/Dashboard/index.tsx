@@ -12,11 +12,6 @@ import {
   TransactionList
 } from './styles';
 
-type User = {
-  name: string;
-  photo: string;
-}
-
 export interface DataListProps extends TransactionCardProps {
   id: string;
 }
@@ -29,7 +24,7 @@ export function Dashboard() {
     {
       id: '1',
       type: 'positive',
-      title: "Barra",
+      producttype: "Barra",
       amount: "1 Unid.",
       price: "R$ 22,00",
       category: {
@@ -41,7 +36,7 @@ export function Dashboard() {
     {
       id: '2',
       type: 'negative',
-      title: "Chocolate meio amargo",
+      producttype: "Chocolate meio amargo",
       amount: "1 Unid.",
       price: "R$ 21,00",
       category: {
@@ -53,7 +48,7 @@ export function Dashboard() {
     {
       id: '3',
       type: 'positive',
-      title: "Pão de mel",
+      producttype: "Pão de mel",
       amount: "2 Unid.",
       price: "R$ 10,00",
       category: {

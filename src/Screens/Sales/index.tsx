@@ -42,17 +42,18 @@ const schema = Yup.object().shape({
 })
 
 export function Sales() {
+  const [totalSale, setTotalSale] = useState('0');
   const [sales, setSales] = useState<ListSalesProps[]>([]);
   const [products, setProducts] = useState<ListProductsProps[]>([]);
   const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
   const [isModalListOpen, setIsModalListOpen] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [descriptionPaid, setDescriptionPaid] = useState('Pagamento Pendente');
-  const [objProduct, setObjProduct] = useState({
+  const [objProduct, setObjProduct] = useState<ListProductsProps>({
     id: '',
     category: '',
     name: 'Produto',
-    price: 0,
+    price: '0',
     photo: ''
   });
 
@@ -65,8 +66,39 @@ export function Sales() {
   }
 
   async function handOpenleListSales() {
-    const dataRequestSales = await AsyncStorage.getItem(keySale);
-    dataRequestSales != null && setSales(JSON.parse(dataRequestSales));
+    let sumSale = 0;
+    const response = await AsyncStorage.getItem(keySale);
+    const dataListSales = response ? JSON.parse(response) : [];
+    const dataListSalesFormatted: ListSalesProps[] = dataListSales
+    .map((item: ListSalesProps) => {
+      sumSale += Number(item.total);
+      const total = Number(item.total)
+      .toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+      const dateFormatted = Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      }).format(new Date(item.datesale));
+      return {
+        id: item.id,
+        client: item.client,
+        phone: item.phone,
+        product: item.product,
+        amount: item.amount,
+        total,
+        ispaid: item.ispaid,
+        datesale: dateFormatted
+      }
+    });
+    const totalSum = sumSale.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+    setTotalSale(totalSum);
+    setSales(dataListSalesFormatted);
     setIsModalListOpen(true);
   }
 
@@ -94,7 +126,8 @@ export function Sales() {
       product: `${objProduct.category} (${objProduct.name})`,
       amount: form.amount,
       total: form.total,
-      paid: descriptionPaid
+      ispaid: isPaid,
+      datesale: new Date()
     }
 
     try {
@@ -111,8 +144,8 @@ export function Sales() {
         id: '',
         category: 'Categoria',
         name: 'Produto',
-        price: 0,
-        photo: ''
+        price: '0',
+        photo: '',
       })
       reset();
       setIsPaid(false);
@@ -186,6 +219,7 @@ export function Sales() {
             listSale={sales}
             setListSale={setSales}
             closeListSales={handCloseleListSales}
+            totalSale={totalSale}
           />
         </Modal>
 

@@ -20,7 +20,7 @@ interface Category {
 
 export interface TransactionCardProps {
   type: 'positive' | 'negative';
-  title: string;
+  producttype: string;
   amount: string;
   price: string;
   category: Category;
@@ -35,7 +35,7 @@ export function TransactionCard({ data }: Props) {
   return (
     <Container>
       <Header>
-        <Title>{data.title}</Title>
+        <Title>{data.producttype}</Title>
         <Amount>{data.amount}</Amount>
       </Header>
 

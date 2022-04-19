@@ -35,7 +35,7 @@ interface ProductProps {
     id: string;
     category: string;
     name: string;
-    price: number;
+    price: string;
     photo: string;
 }
 

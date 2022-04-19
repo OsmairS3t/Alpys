@@ -24,6 +24,7 @@ import {
   Fields,
   TitleForm
 } from './styles';
+//import { ListSalesProps } from '../../List/ListSales';
 
 
 const schema = Yup.object().shape({
@@ -40,27 +41,20 @@ const schema = Yup.object().shape({
 });
 
 export function Purchases() {
+  const [totalPurchase, setTotalPurchase] = useState('0');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [purchases, setPurchases] = useState<ListPurchaseProps[]>([]);
+ // const [purchases, setPurchases] = useState<ListPurchaseProps[]>([]);
+  const [listPurchase, setListPurchase] = useState<ListPurchaseProps[]>([]);
   const { handleSubmit, control, reset, formState: { errors } } = useForm<FormDataProps>({resolver: yupResolver(schema)});
-  
-  useEffect(() => {
-    async function loadData() {
-      const data = await AsyncStorage.getItem(keyPurchase);
-      data != null && setPurchases(JSON.parse(data));
-      //console.log(data);
-    }
-    loadData;
-  },[])
 
   async function handleSubmitPurchase(form: FormDataProps) {
     const dataPurchase = {
       id: uuid.v4(),
       name: form.name,
       amount: form.amount,
-      price: form.price
+      price: form.price,
+      datepurchase: new Date()
     }
-
     try {
       const data = await AsyncStorage.getItem(keyPurchase);
       const currentData = data ? JSON.parse(data) : [];
@@ -70,22 +64,47 @@ export function Purchases() {
         dataPurchase
       ]
       await AsyncStorage.setItem(keyPurchase, JSON.stringify(dataFormatted));
-      console.log(dataFormatted)
       Alert.alert('Compra cadastrada com sucesso');
       reset();
 
     } catch (error) {
       console.log(error);
-      Alert.alert('Não foi possivel salvar');
+      Alert.alert('Não foi possivel cadastrar');
     }
   }
   
-  async function handleModalOpen() {
-    const data = await AsyncStorage.getItem(keyPurchase);
-    data != null && setPurchases(JSON.parse(data));
+  async function handleModalPurchasesOpen() {
+    let sumPurchase = 0;
+    const response = await AsyncStorage.getItem(keyPurchase);
+    const dataPurchase = response ? JSON.parse(response) : [];
+    const dataPurchaseFormatted:ListPurchaseProps[] = dataPurchase
+    .map((item: ListPurchaseProps) => {
+      sumPurchase += Number(item.price);
+      const price = Number(item.price).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+      const dateFormatted = Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      }).format(new Date(item.datepurchase));
+      return {
+        name: item.name,
+        amount: item.amount,
+        price,
+        datepurchase: dateFormatted
+      }
+    });
+    const totalSum = sumPurchase.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+    setTotalPurchase(totalSum);
+    setListPurchase(dataPurchaseFormatted);
     setIsModalOpen(true);
   }
-  
+
   function handleModalClose() {
     setIsModalOpen(false);
   }
@@ -98,7 +117,7 @@ export function Purchases() {
           <Fields>
             <HeaderContainer>
               <TitleForm>Compras:</TitleForm>
-              <ButtonList onPress={handleModalOpen}>
+              <ButtonList onPress={handleModalPurchasesOpen}>
                 <TitleButtonList>Lista</TitleButtonList>
               </ButtonList>
             </HeaderContainer>
@@ -132,7 +151,9 @@ export function Purchases() {
         <Modal visible={isModalOpen}>
           <ListPurchases
             closeListPurchase={handleModalClose}
-            listPurchase={purchases}
+            setListPurchase={setListPurchase}
+            listPurchase={listPurchase}
+            totalPurchases={totalPurchase}
           />
         </Modal>
       </Container>
