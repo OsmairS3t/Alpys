@@ -36,9 +36,28 @@ interface Props {
 export function ListProducts({ listProduct, setListProduct, closeListProduct }: Props) {
     const totalProduct = 100;
 
-    async function handleDeleteProduct(id: string, category: string, name: string) {
+    function handleDeleteProduct(id: string, category: string, name: string) {
+        Alert.alert(
+            "Alerta de Exclusão",
+            "Tem certeza que deseja excluir "+category+" ("+name+") ?",
+            [
+                {
+                    text: "Não",
+                    onPress: () => {},
+                    style: "cancel"
+                },
+                {
+                    text: "Sim",
+                    onPress: () => {
+                        deleteItem(id);
+                    }
+                }
+            ]
+        );
+    }
+
+    async function deleteItem(id: string) {
         try {
-            Alert.alert(`Tem certeza que deseja excluir ${name}.?`);
             const currentData = await AsyncStorage.getItem(keyProduct);
             let newData = currentData !== null && JSON.parse(currentData);
             for(let i=0; i<newData.length; i++) {

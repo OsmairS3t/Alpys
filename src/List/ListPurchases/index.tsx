@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Alert, FlatList } from 'react-native';
 import { HeaderScreen } from '../../components/HeaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -37,22 +37,42 @@ interface Props {
 
 export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase, totalPurchases }: Props) {
 
-    async function handleDeletePurchase(id: string, name: string) {
+    function handleDeletePurchase(id: string, name: string) {
+        Alert.alert(
+            "Alerta de Exclusão",
+            "Tem certeza que deseja excluir "+name+" ?",
+            [
+                {
+                    text: "Não",
+                    onPress: () => {},
+                    style: "cancel"
+                },
+                {
+                    text: "Sim",
+                    onPress: () => {
+                        deleteItem(id);
+                    }
+                }
+            ]
+        );
+    }
+
+    async function deleteItem(id: string) {
         try {
-            Alert.alert(`Tem certeza que deseja deletar ${name}.?`);
             const currentData = await AsyncStorage.getItem(keyPurchase);
             let newData = currentData !== null && JSON.parse(currentData);
-            for(let i=0; i<newData.length; i++) {
-                if(newData[i].id === id) {
-                  newData.splice(i, 1);
+            for (let i = 0; i < newData.length; i++) {
+                if (newData[i].id === id) {
+                    newData.splice(i, 1);
                 }
-            }    
+            }
             await AsyncStorage.removeItem(keyPurchase);
             await AsyncStorage.setItem(keyPurchase, JSON.stringify(newData));
             setListPurchase(newData);
+            totalPurchases='0'
             return true;
         }
-        catch(exception) {
+        catch (exception) {
             return false;
         }
     }
@@ -77,7 +97,7 @@ export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase
                         <Amount>{item.amount}</Amount>
                         <Price>{item.price}</Price>
                         <DeleteButton onPress={() => handleDeletePurchase(item.id, item.name)}>
-                            <IconDelete name="trash-2" size={20}/>
+                            <IconDelete name="trash-2" size={20} />
                         </DeleteButton>
                     </ListPurchaseTotal>
                 )}

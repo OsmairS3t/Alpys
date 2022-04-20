@@ -50,11 +50,6 @@ export const ClientName = styled.Text`
   color: ${({ theme }) => theme.colors.title};
 `;
 
-export const Paid = styled.Text<PaidProps>`
-  color: ${({ theme, isPaid }) =>
-    isPaid ? theme.colors.success : theme.colors.attention};
-`;
-
 export const Amount = styled.Text`
   color: ${({ theme }) => theme.colors.title};
   margin-right: 5px;
@@ -74,6 +69,7 @@ export const Price = styled.Text`
 
 export const GroupButton = styled.View`
   flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const DeleteButton = styled.TouchableOpacity`
@@ -85,14 +81,14 @@ color: ${({ theme }) => theme.colors.shape};
 `;
 
 export const EditButton = styled.TouchableOpacity`
-  margin: 15px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
 `;
 
-export const IconEdit = styled(Feather)<PaidProps>`
-  margin-right: 5px;
+export const Paid = styled.Text<PaidProps>`
+  font-family: ${({ theme })=> theme.fonts.bold};
+  font-size: ${RFValue(14)}px;
   color: ${({ theme, isPaid }) =>
     isPaid ? theme.colors.success : theme.colors.attention};
 `;
