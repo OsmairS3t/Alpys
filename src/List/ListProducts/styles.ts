@@ -33,7 +33,7 @@ export const Icon = styled(Feather)`
 `;
 
 export const ListProductTotal = styled.View`
-  padding: 5px 24px;
+  padding: 20px 24px;
   flex-direction: row;
   border-bottom-width: 1px;
   border-color: ${({ theme })=> theme.colors.text};

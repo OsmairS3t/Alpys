@@ -34,13 +34,10 @@ export const ButtonProduct = styled.TouchableOpacity<ProductSelectProps>`
   padding: ${RFValue(15)}px;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   background-color: ${({ theme, isActive }) => 
     isActive ? theme.colors.secondary : theme.colors.background
   };
-`;
-
-export const Category = styled.Text`
-    color: ${({theme})=>theme.colors.shape};
 `;
 
 export const Name = styled.Text`
@@ -48,6 +45,11 @@ export const Name = styled.Text`
   color: ${({ theme }) => theme.colors.title};
   font-size: ${RFValue(14)}px;
   margin-left: 10px;
+  `;
+  
+export const Price = styled.Text`
+  font-size: ${RFValue(14)}px;
+  color: ${({ theme }) => theme.colors.title};
 `;
 
 export const Separator = styled.View`

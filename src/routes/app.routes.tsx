@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
-import { Dashboard } from '../Screens/Dashboard'
+import { Listing } from '../Screens/Listing'
 import { Purchases } from '../Screens/Purchases';
 import { Sales } from '../Screens/Sales';
 import { Products } from '../Screens/Products';
@@ -31,7 +31,7 @@ export function AppRoutes() {
     >
       <Screen 
         name="Listagem"
-        component={Dashboard}
+        component={Listing}
         options={{
           tabBarIcon: (({ size, color }) => 
             <MaterialIcons 

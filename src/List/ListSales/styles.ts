@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
 
@@ -69,11 +69,16 @@ export const Price = styled.Text`
 
 export const GroupButton = styled.View`
   flex-direction: row;
-  justify-content: space-between;
 `;
 
 export const DeleteButton = styled.TouchableOpacity`
   margin: 15px 0px;
+`;
+
+export const IconEdit = styled(MaterialIcons)<PaidProps>`
+  color: ${({ theme, isPaid }) => 
+    isPaid ? theme.colors.success : theme.colors.attention
+  };
 `;
 
 export const IconDelete = styled(Feather)`
@@ -84,13 +89,14 @@ export const EditButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  padding: 15px;
+  border-radius: 10px;
 `;
 
-export const Paid = styled.Text<PaidProps>`
-  font-family: ${({ theme })=> theme.fonts.bold};
+export const Paid = styled.Text`
+  font-family: ${({ theme })=> theme.fonts.regular};
   font-size: ${RFValue(14)}px;
-  color: ${({ theme, isPaid }) =>
-    isPaid ? theme.colors.success : theme.colors.attention};
+  color: ${({ theme }) => theme.colors.shape};
 `;
 
 export const FooterTotal = styled.View`

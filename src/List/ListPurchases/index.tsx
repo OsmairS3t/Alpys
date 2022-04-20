@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 import { HeaderScreen } from '../../components/HeaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,7 +24,7 @@ export interface ListPurchaseProps {
     id: string;
     name: string;
     amount: number;
-    price: string;
+    price: number;
     datepurchase: Date;
 }
 
@@ -32,10 +32,15 @@ interface Props {
     listPurchase: ListPurchaseProps[];
     setListPurchase: (listPurchase: ListPurchaseProps[]) => void;
     closeListPurchase: () => void;
-    totalPurchases: string;
+    totalPurchases: number;
 }
 
 export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase, totalPurchases }: Props) {
+    const [totPurchase, setTotPurchase] = useState(totalPurchases);
+    const [purchaseViewTotal, setPurchaseViewTotal] = useState(totalPurchases.toLocaleString('pt-BR', {
+        style:'currency',
+        currency: 'BRL'
+    }));
 
     function handleDeletePurchase(id: string, name: string) {
         Alert.alert(
@@ -59,17 +64,20 @@ export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase
 
     async function deleteItem(id: string) {
         try {
-            const currentData = await AsyncStorage.getItem(keyPurchase);
-            let newData = currentData !== null && JSON.parse(currentData);
-            for (let i = 0; i < newData.length; i++) {
-                if (newData[i].id === id) {
-                    newData.splice(i, 1);
-                }
-            }
+            const response = await AsyncStorage.getItem(keyPurchase);
+            const newPurchaseData:ListPurchaseProps[] = response ? JSON.parse(response) : [];
+            let purchaseItem:ListPurchaseProps = newPurchaseData.find((item) => item.id === id) as ListPurchaseProps;
+            let subPurchaseItem = totPurchase - purchaseItem.price;
+            setTotPurchase(subPurchaseItem);
+            let purchaseArray:ListPurchaseProps[] = newPurchaseData.filter(item => item.id !== id);
             await AsyncStorage.removeItem(keyPurchase);
-            await AsyncStorage.setItem(keyPurchase, JSON.stringify(newData));
-            setListPurchase(newData);
-            totalPurchases='0'
+            await AsyncStorage.setItem(keyPurchase, JSON.stringify(purchaseArray));
+            setListPurchase(purchaseArray);
+            let subPurchase = subPurchaseItem.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            })
+            setPurchaseViewTotal(subPurchase);
             return true;
         }
         catch (exception) {
@@ -103,7 +111,7 @@ export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase
                 )}
             />
             <FooterTotal>
-                <TotalPurchases>Total: {totalPurchases}</TotalPurchases>
+                <TotalPurchases>Total: {purchaseViewTotal}</TotalPurchases>
             </FooterTotal>
         </Container>
     )

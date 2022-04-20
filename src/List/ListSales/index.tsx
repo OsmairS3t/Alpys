@@ -19,6 +19,7 @@ import {
   Price,
   GroupButton,
   DeleteButton,
+  IconEdit,
   IconDelete,
   EditButton,
   FooterTotal,
@@ -31,7 +32,7 @@ export interface ListSalesProps {
   phone: string;
   product: string;
   amount: string;
-  total: string;
+  total: number;
   ispaid: boolean;
   datesale: string;
 }
@@ -40,9 +41,15 @@ interface Props {
   listSale: ListSalesProps[];
   setListSale: (listSale: ListSalesProps[]) => void;
   closeListSales: () => void;
-  totalSale: string;
+  totalSale: number;
 }
 export function ListSales({ listSale, setListSale, closeListSales, totalSale }: Props) {
+  const [isPaid, setIsPaid] = useState<boolean>(false);
+  const [totSale, setTotSale] = useState(totalSale);
+  const [totalSaleView, setTotalSaleView] = useState(totalSale.toLocaleString('pt-BR', {
+    style:'currency',
+    currency: 'BRL'
+  }))
 
   function handleDeleteSale(id: string, product: string) {
     Alert.alert(
@@ -65,27 +72,21 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
   }
 
   async function deleteItem(id: string, product: string) {
-    let descriptionDeleted = '';
-    let totalSaleAtual = Number(totalSale)
-    let totalDeleted=0;
     try {
-      const currentData = await AsyncStorage.getItem(keySale);
-      let newData = currentData !== null && JSON.parse(currentData);
-      for (let i = 0; i < newData.length; i++) {
-        if (newData[i].id === id) {
-          descriptionDeleted = `${newData[i].product} de ${newData[i].client}`;
-          totalDeleted = newData[i].total
-          newData.splice(i, 1);
-        }
-      }
-      totalSaleAtual -= totalDeleted;
-      totalSale = totalSaleAtual.toLocaleString('pt-BR', {
+      const response = await AsyncStorage.getItem(keySale);
+      const newSaleData:ListSalesProps[] = response ? JSON.parse(response) : [];
+      let saleItem:ListSalesProps = newSaleData.find((item) => item.id === id) as ListSalesProps;
+      let subSaleItem = totSale - saleItem.total;
+      setTotSale(subSaleItem);
+      let saleArray:ListSalesProps[] = newSaleData.filter(item => item.id !== id);
+      await AsyncStorage.removeItem(keySale);
+      await AsyncStorage.setItem(keySale, JSON.stringify(saleArray));
+      setListSale(saleArray);
+      let subSale = subSaleItem.toLocaleString('pt-BR', {
         style: 'currency',
         currency: 'BRL'
       })
-      await AsyncStorage.removeItem(keySale);
-      await AsyncStorage.setItem(keySale, JSON.stringify(newData));
-      setListSale(newData);
+      setTotalSaleView(subSale);
       return true;
     }
     catch (exception) {
@@ -132,12 +133,12 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
             <GroupList>
               <ClientName>Cliente: {item.client}</ClientName>
               <ProductName>Produto: {item.product}</ProductName>
-              <Amount>Quantidade: {item.amount}    Data: {item.datesale}</Amount>
+              <Amount>Quantidade: {item.amount}  Data: {item.datesale}</Amount>
               <Price>Total: {item.total}</Price>
             </GroupList>
             <GroupButton>
               <EditButton onPress={() => handleEditSale(item.id)}>
-                <Paid isPaid={item.ispaid}>{item.ispaid ? 'Pagamento Confirmado' : 'Pagamento Pendente'}</Paid>
+                <IconEdit name={item.ispaid ? 'attach-money' : 'money-off'} isPaid={item.ispaid} size={30} />
               </EditButton>
               <DeleteButton onPress={() => handleDeleteSale(item.id, item.product)}>
                 <IconDelete name="trash-2" size={30} />
@@ -147,7 +148,7 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
         )}
       />
       <FooterTotal>
-        <TotalSales>Total: {totalSale}</TotalSales>
+        <TotalSales>Total: {totalSaleView}</TotalSales>
       </FooterTotal>
     </Container>
   )

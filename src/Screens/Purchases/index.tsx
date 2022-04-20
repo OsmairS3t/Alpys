@@ -24,8 +24,6 @@ import {
   Fields,
   TitleForm
 } from './styles';
-//import { ListSalesProps } from '../../List/ListSales';
-
 
 const schema = Yup.object().shape({
   name: Yup
@@ -41,9 +39,8 @@ const schema = Yup.object().shape({
 });
 
 export function Purchases() {
-  const [totalPurchase, setTotalPurchase] = useState('0');
+  const [totalPurchase, setTotalPurchase] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
- // const [purchases, setPurchases] = useState<ListPurchaseProps[]>([]);
   const [listPurchase, setListPurchase] = useState<ListPurchaseProps[]>([]);
   const { handleSubmit, control, reset, formState: { errors } } = useForm<FormDataProps>({resolver: yupResolver(schema)});
 
@@ -57,8 +54,7 @@ export function Purchases() {
     }
     try {
       const data = await AsyncStorage.getItem(keyPurchase);
-      const currentData = data ? JSON.parse(data) : [];
-
+      const currentData:ListPurchaseProps[] = data ? JSON.parse(data) : [];
       const dataFormatted = [
         ...currentData,
         dataPurchase
@@ -79,28 +75,21 @@ export function Purchases() {
     const dataPurchase = response ? JSON.parse(response) : [];
     const dataPurchaseFormatted:ListPurchaseProps[] = dataPurchase
     .map((item: ListPurchaseProps) => {
-      sumPurchase += Number(item.price);
-      const price = Number(item.price).toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      });
+      sumPurchase += item.price;
       const dateFormatted = Intl.DateTimeFormat('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: '2-digit'
       }).format(new Date(item.datepurchase));
       return {
+        id: item.id,
         name: item.name,
         amount: item.amount,
-        price,
+        price: item.price,
         datepurchase: dateFormatted
       }
     });
-    const totalSum = sumPurchase.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    });
-    setTotalPurchase(totalSum);
+    setTotalPurchase(sumPurchase);
     setListPurchase(dataPurchaseFormatted);
     setIsModalOpen(true);
   }

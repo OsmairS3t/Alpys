@@ -38,11 +38,11 @@ const schema = Yup.object().shape({
   client: Yup.string(),
   product: Yup.string().required('é necessário informar o nome do Produto'),
   amount: Yup.number().typeError('Informe um valor numérico'),
-  total: Yup.number(),
 })
 
 export function Sales() {
-  const [totalSale, setTotalSale] = useState('0');
+  const [totalSale, setTotalSale] = useState(0);
+  const [totalPriceProduct, setTotalPriceProduct] = useState(0);
   const [sales, setSales] = useState<ListSalesProps[]>([]);
   const [products, setProducts] = useState<ListProductsProps[]>([]);
   const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
@@ -53,7 +53,7 @@ export function Sales() {
     id: '',
     category: '',
     name: 'Produto',
-    price: '0',
+    price: 0,
     photo: ''
   });
 
@@ -61,8 +61,8 @@ export function Sales() {
   } = useForm<FormDataProps>();
 
   function handleChangePaid() {
-    setIsPaid(!isPaid)
-    !isPaid ? setDescriptionPaid('Pagamento Confirmado') : setDescriptionPaid('Pagamento Pendente')
+    setIsPaid(!isPaid);
+    !isPaid ? setDescriptionPaid('Pagamento Confirmado') : setDescriptionPaid('Pagamento Pendente');
   }
 
   async function handOpenleListSales() {
@@ -72,11 +72,6 @@ export function Sales() {
     const dataListSalesFormatted: ListSalesProps[] = dataListSales
     .map((item: ListSalesProps) => {
       sumSale += Number(item.total);
-      const total = Number(item.total)
-      .toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      });
       const dateFormatted = Intl.DateTimeFormat('pt-BR', {
         day: '2-digit',
         month: '2-digit',
@@ -88,16 +83,12 @@ export function Sales() {
         phone: item.phone,
         product: item.product,
         amount: item.amount,
-        total,
+        total: item.total,
         ispaid: item.ispaid,
         datesale: dateFormatted
       }
     });
-    const totalSum = sumSale.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    });
-    setTotalSale(totalSum);
+    setTotalSale(sumSale);
     setSales(dataListSalesFormatted);
     setIsModalListOpen(true);
   }
@@ -117,19 +108,20 @@ export function Sales() {
   }
 
   async function handleSubmitSale(form: FormDataProps) {
+    setTotalPriceProduct(form.amount * objProduct.price);
+
     if (objProduct.name === 'Produto')
       return Alert.alert('Selecione o produto.');
-
+    
     const dataSales = {
       id: uuid.v4().toString(),
       client: form.client,
       product: `${objProduct.category} (${objProduct.name})`,
       amount: form.amount,
-      total: form.total,
+      total: form.amount * objProduct.price,
       ispaid: isPaid,
       datesale: new Date()
     }
-
     try {
       const data = await AsyncStorage.getItem(keySale);
       const currentData = data ? JSON.parse(data) : [];
@@ -138,13 +130,12 @@ export function Sales() {
         dataSales
       ]
       await AsyncStorage.setItem(keySale, JSON.stringify(dataFormatted));
-      console.log(dataFormatted)
       Alert.alert('Venda cadastrada com sucesso!');
       setObjProduct({
         id: '',
         category: 'Categoria',
         name: 'Produto',
-        price: '0',
+        price: 0,
         photo: '',
       })
       reset();
@@ -180,26 +171,13 @@ export function Sales() {
               title={objProduct.name}
               onPress={handleOpenModalProducts}
             />
-            <Fields>
-              <Field>
-                <InputForm
-                  placeholder='Quantidade'
-                  name='amount'
-                  control={control}
-                  error={errors.amount && errors.amount.message}
-                  keyboardType='numeric'
-                />
-              </Field>
-              <Field>
-                <InputForm
-                  placeholder='Valor Total'
-                  name='total'
-                  control={control}
-                  error={errors.total && errors.total.message}
-                  keyboardType='numeric'
-                />
-              </Field>
-            </Fields>
+            <InputForm
+              placeholder='Quantidade'
+              name='amount'
+              control={control}
+              error={errors.amount && errors.amount.message}
+              keyboardType='numeric'
+            />
             <Fields>
               <TransactionTypeButton
                 isActive={isPaid}

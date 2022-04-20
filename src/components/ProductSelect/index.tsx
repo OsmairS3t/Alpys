@@ -3,30 +3,13 @@ import { FlatList } from 'react-native';
 import { Button } from '../Forms/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-/* const products = [
-    {
-      "id": "fjsdçafjsa",
-      "category": "Barra Recheada",
-      "name": "Maracuja",
-      "photo": "dd",
-      "price": 3,
-    },
-    {
-      "id": "fjsdçafjsfsdfsd",
-      "category": "Bombom",
-      "name": "Morango",
-      "photo": "dana",
-      "price": 3,
-    },
-  ] */
-
 import { 
   Container,
   Header,
   Title,
-  Category,
   ButtonProduct,
   Name,
+  Price,
   Separator,
   Footer
  } from './styles';
@@ -35,7 +18,7 @@ interface ProductProps {
     id: string;
     category: string;
     name: string;
-    price: string;
+    price: number;
     photo: string;
 }
 
@@ -47,7 +30,6 @@ interface Props {
 }
 
 export function ProductSelect({ product, setProduct, listProducts, closeSelectProduct }: Props) {
-  console.log(`Lista Products: ${listProducts}`);
 
   function handleProductSelect(product: ProductProps) {
     setProduct(product);
@@ -56,7 +38,7 @@ export function ProductSelect({ product, setProduct, listProducts, closeSelectPr
   return (
     <Container>
       <Header>
-        <Title>Produtos</Title>
+        <Title>Produtos Disponíveis</Title>
       </Header>
 
       <FlatList 
@@ -68,8 +50,15 @@ export function ProductSelect({ product, setProduct, listProducts, closeSelectPr
             onPress={() => handleProductSelect(item)}
             isActive={product.id === item.id}
           >
-            <Category>{item.category}</Category>
-            <Name>({item.name})</Name>
+            <Name>{item.category} ({item.name})</Name>
+            <Price>
+              {
+                item.price.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL'
+                })
+              }
+            </Price>
           </ButtonProduct>
         )}
         ItemSeparatorComponent={Separator}

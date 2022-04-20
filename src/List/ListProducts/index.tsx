@@ -23,7 +23,7 @@ export interface ListProductsProps {
     id: string;
     category: string;
     name: string;
-    price: string;
+    price: number;
     photo: string;
 }
 
@@ -58,16 +58,12 @@ export function ListProducts({ listProduct, setListProduct, closeListProduct }: 
 
     async function deleteItem(id: string) {
         try {
-            const currentData = await AsyncStorage.getItem(keyProduct);
-            let newData = currentData !== null && JSON.parse(currentData);
-            for(let i=0; i<newData.length; i++) {
-                if(newData[i].id === id) {
-                  newData.splice(i, 1);
-                }
-            }    
+            const response = await AsyncStorage.getItem(keyProduct);
+            const newProductData: ListProductsProps[] = response ? JSON.parse(response) : [];
+            let productArray: ListProductsProps[] = newProductData.filter(item => item.id !== id);
             await AsyncStorage.removeItem(keyProduct);
-            await AsyncStorage.setItem(keyProduct, JSON.stringify(newData));
-            setListProduct(newData);
+            await AsyncStorage.setItem(keyProduct, JSON.stringify(productArray));
+            setListProduct(productArray);
             return true;
         }
         catch(exception) {
