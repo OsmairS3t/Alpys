@@ -12,14 +12,14 @@ import { TransactionTypeButton } from '../../components/Forms/TransactionTypeBut
 import { ProductSelectButton } from '../../components/Forms/ProductSelectButton';
 
 import { ListSales } from '../../List/ListSales';
-import { ListSalesProps } from '../../List/ListSales';
+//import { ListSalesProps } from '../../List/ListSales';
 import { ListProductsProps } from '../../List/ListProducts';
 
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { keySale } from '../../utils/keyStorage';
+import { keyTransaction } from '../../utils/keyStorage';
 import { keyProduct } from '../../utils/keyStorage';
 
 import {
@@ -40,10 +40,30 @@ const schema = Yup.object().shape({
   amount: Yup.number().typeError('Informe um valor numérico'),
 })
 
+/* export interface ITransactionProps {
+  description: client - category - product;
+  modality: 'sell';
+  modalityicon: 'dollar-sign';
+  datetransaction: datesale;
+  price: total;
+} 
+export interface ListSalesProps {
+  id: string;
+  client: string;
+  phone: string;
+  product: string;
+  amount: string;
+  total: number;
+  ispaid: boolean;
+  datesale: string;
+}*/
+
+import { ITransactionProps } from '../../utils/transactions';
+
 export function Sales() {
   const [totalSale, setTotalSale] = useState(0);
   const [totalPriceProduct, setTotalPriceProduct] = useState(0);
-  const [sales, setSales] = useState<ListSalesProps[]>([]);
+  const [sales, setSales] = useState<ITransactionProps[]>([]);
   const [products, setProducts] = useState<ListProductsProps[]>([]);
   const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
   const [isModalListOpen, setIsModalListOpen] = useState(false);
@@ -67,25 +87,26 @@ export function Sales() {
 
   async function handOpenleListSales() {
     let sumSale = 0;
-    const response = await AsyncStorage.getItem(keySale);
-    const dataListSales = response ? JSON.parse(response) : [];
-    const dataListSalesFormatted: ListSalesProps[] = dataListSales
-    .map((item: ListSalesProps) => {
-      sumSale += Number(item.total);
+    const response = await AsyncStorage.getItem(keyTransaction);
+    const dataListSales: ITransactionProps[] = response ? JSON.parse(response) : [];
+    let listSalesResponse: ITransactionProps[] = dataListSales.filter(transaction => transaction.modality !== 'buy');
+    const dataListSalesFormatted = listSalesResponse
+    .map((item: ITransactionProps) => {
+      sumSale += Number(item.price);
       const dateFormatted = Intl.DateTimeFormat('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: '2-digit'
-      }).format(new Date(item.datesale));
+      }).format(new Date(item.datetransaction));
       return {
         id: item.id,
-        client: item.client,
-        phone: item.phone,
-        product: item.product,
+        description: item.description,
+        modality: item.modality,
+        modalityicon: item.modalityicon,
         amount: item.amount,
-        total: item.total,
+        price: item.price,
         ispaid: item.ispaid,
-        datesale: dateFormatted
+        datetransaction: dateFormatted
       }
     });
     setTotalSale(sumSale);
@@ -115,21 +136,22 @@ export function Sales() {
     
     const dataSales = {
       id: uuid.v4().toString(),
-      client: form.client,
-      product: `${objProduct.category} (${objProduct.name})`,
+      description: `${form.client} - ${objProduct.category} (${objProduct.name})`,
+      modality: 'sell',
+      modalityicon: 'dollar-sign',
       amount: form.amount,
-      total: form.amount * objProduct.price,
+      price: form.amount * objProduct.price,
       ispaid: isPaid,
-      datesale: new Date()
+      datetransaction: new Date()
     }
     try {
-      const data = await AsyncStorage.getItem(keySale);
+      const data = await AsyncStorage.getItem(keyTransaction);
       const currentData = data ? JSON.parse(data) : [];
       const dataFormatted = [
         ...currentData,
         dataSales
       ]
-      await AsyncStorage.setItem(keySale, JSON.stringify(dataFormatted));
+      await AsyncStorage.setItem(keyTransaction, JSON.stringify(dataFormatted));
       Alert.alert('Venda cadastrada com sucesso!');
       setObjProduct({
         id: '',

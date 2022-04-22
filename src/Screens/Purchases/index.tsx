@@ -12,8 +12,7 @@ import { useForm } from 'react-hook-form';
 import { FormDataProps } from '../../components/Forms/InputForm'
 
 import { ListPurchases } from '../../List/ListPurchases';
-import { ListPurchaseProps } from '../../List/ListPurchases';
-import { keyPurchase } from '../../utils/keyStorage';
+import { keyTransaction } from '../../utils/keyStorage';
 
 import {
   Container,
@@ -24,6 +23,7 @@ import {
   Fields,
   TitleForm
 } from './styles';
+import { ITransactionProps } from '../../utils/transactions';
 
 const schema = Yup.object().shape({
   name: Yup
@@ -41,25 +41,28 @@ const schema = Yup.object().shape({
 export function Purchases() {
   const [totalPurchase, setTotalPurchase] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [listPurchase, setListPurchase] = useState<ListPurchaseProps[]>([]);
+  const [listPurchase, setListPurchase] = useState<ITransactionProps[]>([]);
   const { handleSubmit, control, reset, formState: { errors } } = useForm<FormDataProps>({resolver: yupResolver(schema)});
 
   async function handleSubmitPurchase(form: FormDataProps) {
     const dataPurchase = {
       id: uuid.v4(),
-      name: form.name,
+      description: form.name,
+      modality: 'buy',
+      modalityicon: 'dollar-sign',
+      ispaid: true,
       amount: form.amount,
       price: form.price,
-      datepurchase: new Date()
+      datetransaction: new Date()
     }
     try {
-      const data = await AsyncStorage.getItem(keyPurchase);
-      const currentData:ListPurchaseProps[] = data ? JSON.parse(data) : [];
+      const data = await AsyncStorage.getItem(keyTransaction);
+      const currentData:ITransactionProps[] = data ? JSON.parse(data) : [];
       const dataFormatted = [
         ...currentData,
         dataPurchase
       ]
-      await AsyncStorage.setItem(keyPurchase, JSON.stringify(dataFormatted));
+      await AsyncStorage.setItem(keyTransaction, JSON.stringify(dataFormatted));
       Alert.alert('Compra cadastrada com sucesso');
       reset();
 
@@ -71,22 +74,25 @@ export function Purchases() {
   
   async function handleModalPurchasesOpen() {
     let sumPurchase = 0;
-    const response = await AsyncStorage.getItem(keyPurchase);
+    const response = await AsyncStorage.getItem(keyTransaction);
     const dataPurchase = response ? JSON.parse(response) : [];
-    const dataPurchaseFormatted:ListPurchaseProps[] = dataPurchase
-    .map((item: ListPurchaseProps) => {
+    const dataPurchaseFormatted:ITransactionProps[] = dataPurchase
+    .map((item: ITransactionProps) => {
       sumPurchase += item.price;
       const dateFormatted = Intl.DateTimeFormat('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: '2-digit'
-      }).format(new Date(item.datepurchase));
+      }).format(new Date(item.datetransaction));
       return {
         id: item.id,
-        name: item.name,
+        description: item.description,
+        modality: item.modality,
+        modalityicon: item.modalityicon,
         amount: item.amount,
         price: item.price,
-        datepurchase: dateFormatted
+        datetransaction: dateFormatted,
+        ispaid: item.ispaid
       }
     });
     setTotalPurchase(sumPurchase);

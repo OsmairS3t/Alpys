@@ -14,9 +14,7 @@ import {
     LogoTipo,
     HightLightCards,
     Content,
-    Title,
-    TransactionList,
-    Teste
+    Title
 } from './styles';
 
 const logotipo = '../../assets/logo_alpys.png';
@@ -28,9 +26,9 @@ const transactionCardItems: ITransactionProps[] = [
         description: 'Osmair - Barra Recheada (Maracujá)',
         modality: 'sell',
         modalityicon: 'dollar-sign',
-        datetransaction: new Date(),
+        datetransaction: String(new Date().getDate()),
         amount: 5,
-        price: 15.00,
+        price: '15.00',
         ispaid: true,
     },
     {
@@ -38,22 +36,20 @@ const transactionCardItems: ITransactionProps[] = [
         description: 'Wanessa - Bombom (Côco)',
         modality: 'sell',
         modalityicon: 'dollar-sign',
-        datetransaction: new Date(),
+        datetransaction: String(new Date().getDate()),
         amount: 5,
-        price: 15.00,
+        price: '15.00',
         ispaid: true,
     }
 ]
 
 export function Listing() {
     const [isLoading, setIsloading] = useState(true);
-    const [transactions, setTransactions] = useState<ITransactionProps[]>([]);
     const [highlightData, setHighlightData] = useState<IHightLightProps>({} as IHightLightProps);
+    const [objTransactions, setObjTransactions] = useState<ITransactionProps[]>([]);
     const theme = useTheme();
 
-    function getLastTransactionDate(
-        collection: ITransactionProps[],
-        modality: 'buy' | 'sell') {
+    function getLastTransactionDate(collection: ITransactionProps[], modality: 'buy' | 'sell') {
         const collectionFilttered = collection.filter(
             transaction => transaction.modality === modality);
 
@@ -69,41 +65,9 @@ export function Listing() {
     }
 
     async function loadTransactions() {
-        //const response = await AsyncStorage.getItem(keyTransaction);
-        //const transactions = response ? JSON.parse(response) : [];
-        const transactions = [
-            {
-                id: '1',
-                description: 'item.description',
-                modality: 'sell',
-                modalityicon: 'dollar-sign',
-                price: '130',
-                datetransaction: new Date(),
-                amount: 5,
-                ispaid: false
-            },
-            {
-                id: '2',
-                description: 'item.description2',
-                modality: 'buy',
-                modalityicon: 'dollar-sign',
-                price: '100',
-                datetransaction: new Date(),
-                amount: 2,
-                ispaid: true
-            },
-            {
-                id: '3',
-                description: 'item.description3',
-                modality: 'sell',
-                modalityicon: 'dollar-sign',
-                price: '350',
-                datetransaction: new Date(),
-                amount: 3,
-                ispaid: true
-            },
-        ]
-
+        const response = await AsyncStorage.getItem(keyTransaction);
+        const transactions = response ? JSON.parse(response) : [];
+       
         let sellTotal = 0;
         let buyTotal = 0;
 
@@ -140,7 +104,7 @@ export function Listing() {
                 }
             });
 
-        setTransactions(transactionsFormatted);
+            setObjTransactions(transactionsFormatted);
 
         const lastTransactionSell = getLastTransactionDate(transactions, 'sell')
         const lastTransactionBuy = getLastTransactionDate(transactions, 'buy');

@@ -3,9 +3,9 @@ export interface ITransactionProps {
     description: string;
     modality: 'buy'|'sell';
     modalityicon: string;
-    datetransaction: Date;
+    datetransaction: string;
     amount: number;
-    price: number;
+    price: string;
     ispaid: boolean;
 }
 

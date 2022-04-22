@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HeaderScreen } from '../../components/HeaderScreen';
-import { keySale } from '../../utils/keyStorage';
+import { keyTransaction } from '../../utils/keyStorage';
 
 import {
   Container,
@@ -11,11 +11,9 @@ import {
   ButtonBack,
   Icon,
   ListSalesTotal,
-  ClientName,
+  Description,
   GroupList,
-  ProductName,
   Amount,
-  Paid,
   Price,
   GroupButton,
   DeleteButton,
@@ -26,20 +24,11 @@ import {
   TotalSales
 } from './styles';
 
-export interface ListSalesProps {
-  id: string;
-  client: string;
-  phone: string;
-  product: string;
-  amount: string;
-  total: number;
-  ispaid: boolean;
-  datesale: string;
-}
+import { ITransactionProps } from '../../utils/transactions';
 
 interface Props {
-  listSale: ListSalesProps[];
-  setListSale: (listSale: ListSalesProps[]) => void;
+  listSale: ITransactionProps[];
+  setListSale: (listSale: ITransactionProps[]) => void;
   closeListSales: () => void;
   totalSale: number;
 }
@@ -73,14 +62,14 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
 
   async function deleteItem(id: string, product: string) {
     try {
-      const response = await AsyncStorage.getItem(keySale);
-      const newSaleData:ListSalesProps[] = response ? JSON.parse(response) : [];
-      let saleItem:ListSalesProps = newSaleData.find((item) => item.id === id) as ListSalesProps;
-      let subSaleItem = totSale - saleItem.total;
+      const response = await AsyncStorage.getItem(keyTransaction);
+      const newSaleData:ITransactionProps[] = response ? JSON.parse(response) : [];
+      let saleItem:ITransactionProps = newSaleData.find((item) => item.id === id) as ITransactionProps;
+      let subSaleItem = totSale - saleItem.price;
       setTotSale(subSaleItem);
-      let saleArray:ListSalesProps[] = newSaleData.filter(item => item.id !== id);
-      await AsyncStorage.removeItem(keySale);
-      await AsyncStorage.setItem(keySale, JSON.stringify(saleArray));
+      let saleArray:ITransactionProps[] = newSaleData.filter(item => item.id !== id);
+      await AsyncStorage.removeItem(keyTransaction);
+      await AsyncStorage.setItem(keyTransaction, JSON.stringify(saleArray));
       setListSale(saleArray);
       let subSale = subSaleItem.toLocaleString('pt-BR', {
         style: 'currency',
@@ -96,8 +85,9 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
 
   async function handleEditSale(id: string) {
     try {
-      const response = await AsyncStorage.getItem(keySale);
-      let listSalesResponse: ListSalesProps[] = response ? JSON.parse(response) : [];
+      const response = await AsyncStorage.getItem(keyTransaction);
+      let listTransactionResponse: ITransactionProps[] = response ? JSON.parse(response) : [];
+      let listSalesResponse = listTransactionResponse.filter(transaction => transaction.modality!=='buy')
       listSalesResponse.map((item) => {
         if (item.id === id) {
           (item.ispaid) ?
@@ -131,16 +121,15 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
         renderItem={({ item }) => (
           <ListSalesTotal>
             <GroupList>
-              <ClientName>Cliente: {item.client}</ClientName>
-              <ProductName>Produto: {item.product}</ProductName>
-              <Amount>Quantidade: {item.amount}  Data: {item.datesale}</Amount>
-              <Price>Total: {item.total}</Price>
+              <Description>Descrição: {item.description}</Description>
+              <Amount>Quantidade: {item.amount}  Data: {item.datetransaction}</Amount>
+              <Price>Total: {item.price}</Price>
             </GroupList>
             <GroupButton>
               <EditButton onPress={() => handleEditSale(item.id)}>
                 <IconEdit name={item.ispaid ? 'attach-money' : 'money-off'} isPaid={item.ispaid} size={30} />
               </EditButton>
-              <DeleteButton onPress={() => handleDeleteSale(item.id, item.product)}>
+              <DeleteButton onPress={() => handleDeleteSale(item.id, item.description)}>
                 <IconDelete name="trash-2" size={30} />
               </DeleteButton>
             </GroupButton>

@@ -45,7 +45,7 @@ export const ListSalesTotal = styled.View`
 
 export const GroupList = styled.View``;
 
-export const ClientName = styled.Text`
+export const Description = styled.Text`
   font-size: ${RFValue(16)}px;
   color: ${({ theme }) => theme.colors.title};
 `;
@@ -53,12 +53,6 @@ export const ClientName = styled.Text`
 export const Amount = styled.Text`
   color: ${({ theme }) => theme.colors.title};
   margin-right: 5px;
-  font-size: ${RFValue(14)}px;
-`;
-
-export const ProductName = styled.Text`
-  flex: 1;  
-  color: ${({ theme }) => theme.colors.title};
   font-size: ${RFValue(14)}px;
 `;
 
@@ -91,12 +85,6 @@ export const EditButton = styled.TouchableOpacity`
   justify-content: flex-start;
   padding: 15px;
   border-radius: 10px;
-`;
-
-export const Paid = styled.Text`
-  font-family: ${({ theme })=> theme.fonts.regular};
-  font-size: ${RFValue(14)}px;
-  color: ${({ theme }) => theme.colors.shape};
 `;
 
 export const FooterTotal = styled.View`

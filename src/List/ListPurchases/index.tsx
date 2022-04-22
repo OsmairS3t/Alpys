@@ -20,22 +20,17 @@ import {
     FooterTotal
 } from './styles';
 
-export interface ListPurchaseProps {
-    id: string;
-    name: string;
-    amount: number;
-    price: number;
-    datepurchase: Date;
-}
+import { ITransactionProps } from '../../utils/transactions';
 
 interface Props {
-    listPurchase: ListPurchaseProps[];
-    setListPurchase: (listPurchase: ListPurchaseProps[]) => void;
+    listPurchase: ITransactionProps[];
+    setListPurchase: (listPurchase: ITransactionProps[]) => void;
     closeListPurchase: () => void;
     totalPurchases: number;
 }
 
 export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase, totalPurchases }: Props) {
+    console.log(listPurchase)
     const [totPurchase, setTotPurchase] = useState(totalPurchases);
     const [purchaseViewTotal, setPurchaseViewTotal] = useState(totalPurchases.toLocaleString('pt-BR', {
         style:'currency',
@@ -65,11 +60,11 @@ export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase
     async function deleteItem(id: string) {
         try {
             const response = await AsyncStorage.getItem(keyPurchase);
-            const newPurchaseData:ListPurchaseProps[] = response ? JSON.parse(response) : [];
-            let purchaseItem:ListPurchaseProps = newPurchaseData.find((item) => item.id === id) as ListPurchaseProps;
+            const newPurchaseData:ITransactionProps[] = response ? JSON.parse(response) : [];
+            let purchaseItem:ITransactionProps = newPurchaseData.find((item) => item.id === id) as ITransactionProps;
             let subPurchaseItem = totPurchase - purchaseItem.price;
             setTotPurchase(subPurchaseItem);
-            let purchaseArray:ListPurchaseProps[] = newPurchaseData.filter(item => item.id !== id);
+            let purchaseArray:ITransactionProps[] = newPurchaseData.filter(item => item.id !== id);
             await AsyncStorage.removeItem(keyPurchase);
             await AsyncStorage.setItem(keyPurchase, JSON.stringify(purchaseArray));
             setListPurchase(purchaseArray);
@@ -101,10 +96,15 @@ export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <ListPurchaseTotal>
-                        <PurchaseName>{item.name}</PurchaseName>
+                        <PurchaseName>{item.description}</PurchaseName>
                         <Amount>{item.amount}</Amount>
-                        <Price>{item.price}</Price>
-                        <DeleteButton onPress={() => handleDeletePurchase(item.id, item.name)}>
+                        <Price>
+                            {item.price.toLocaleString('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                            })}
+                        </Price>
+                        <DeleteButton onPress={() => handleDeletePurchase(item.id, item.description)}>
                             <IconDelete name="trash-2" size={20} />
                         </DeleteButton>
                     </ListPurchaseTotal>
