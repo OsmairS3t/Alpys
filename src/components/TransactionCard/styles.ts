@@ -3,7 +3,7 @@ import { Feather } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 interface TransactionProps {
-  type: 'positive' | 'negative';
+  modality: 'sell' | 'buy';
 }
 
 export const Container = styled.View`
@@ -15,6 +15,12 @@ export const Container = styled.View`
 `;
 
 export const Header = styled.View`
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const Content = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -33,8 +39,8 @@ export const Amount = styled.Text`
 export const Price = styled.Text<TransactionProps>`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${RFValue(14)}px;
-  color: ${({ theme, type }) => 
-  type === 'positive' ? theme.colors.success : theme.colors.attention};
+  color: ${({ theme, modality }) => 
+  modality === 'sell' ? theme.colors.success : theme.colors.attention};
   margin-top: 2px;
 `;
 

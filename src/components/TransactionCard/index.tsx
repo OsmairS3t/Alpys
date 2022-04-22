@@ -1,8 +1,10 @@
 import React from 'react';
+import { ITransactionProps } from '../../utils/transactions'
 
 import { 
   Container,
   Header,
+  Content,
   Title,
   Amount,
   Price,
@@ -18,38 +20,47 @@ interface Category {
   icon: string;
 }
 
-export interface TransactionCardProps {
-  type: 'positive' | 'negative';
-  producttype: string;
-  amount: string;
-  price: string;
-  category: Category;
-  date: string;
-}
-
 interface Props {
-  data: TransactionCardProps;
+  data: ITransactionProps;
 }
 
 export function TransactionCard({ data }: Props) {
+  const dateFormatted = Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit'
+  }).format(data.datetransaction);
+  const dataFormatted = {
+    id: data.id,
+    description: data.description,
+    modality: data.modality,
+    modalityicon: data.modalityicon,
+    datetransaction: dateFormatted,
+    amount: data.amount,
+    price: data.price,
+    ispaid: data.ispaid
+  }
+
   return (
     <Container>
       <Header>
-        <Title>{data.producttype}</Title>
-        <Amount>{data.amount}</Amount>
+        <Title>{dataFormatted.description}</Title>
       </Header>
 
-      <Price type={data.type}>
-        {data.type === 'negative' && '- ' }
-        {data.price}
-      </Price>
-      
+      <Content>
+        <Price modality={dataFormatted.modality}>
+          {dataFormatted.modality === 'buy' && '- ' }
+          {dataFormatted.price}
+        </Price>
+        <Amount>{dataFormatted.amount}</Amount>
+      </Content>
+
       <Footer>
         <Category>
-          <Icon name={data.category.icon} />
-          <CategoryName>{data.category.name}</CategoryName>
+          <Icon name={dataFormatted.modalityicon} />
+          <CategoryName>{dataFormatted.modality === 'buy' ? 'Compras' : 'Vendas'}</CategoryName>
         </Category>
-        <Date>{data.date}</Date>
+        <Date>{dataFormatted.datetransaction}</Date>
       </Footer>
     </Container>
   )

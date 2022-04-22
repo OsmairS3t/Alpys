@@ -1,8 +1,14 @@
 import styled from 'styled-components/native';
 import { FlatList } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
-import { DataListProps } from '../Dashboard';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
+import { ITransactionProps } from '../../utils/transactions';
+
+export const LoadContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
 
 export const Container = styled.View`
     flex: 1;
@@ -18,10 +24,7 @@ export const Header = styled.View`
     margin-bottom: 20px;
 `;
 
-export const LogoTipo = styled.Image`
-  width: ${RFValue(80)}px;
-  height: ${RFValue(80)}px;
-`;
+export const LogoTipo = styled.Image``;
 
 export const HightLightCards = styled.ScrollView.attrs({
     horizontal: true,
@@ -46,11 +49,24 @@ export const Title = styled.Text`
   margin-bottom: 16px;
 `;
 
-export const TransactionList = styled(
-  FlatList as new () => FlatList<DataListProps>
-  ).attrs({
-  showsVerticalScrollIndicator: false,
-  contentContainerStyle: {
-    paddingBottom: getBottomSpace()
-  }
+export const TransactionList = styled(FlatList as new () => FlatList<ITransactionProps>)
+  .attrs({
+    showsVerticalScrollIndicator: false,
+    contentContainerStyle: {
+      paddingBottom: getBottomSpace()
+    }
   })``;
+
+export const Teste = styled.Text`
+  font-family: ${({theme})=>theme.fonts.regular};
+  color: ${({theme})=>theme.colors.shape};
+`;
+
+
+/* export const TransactionList = styled(FlatList as new () => FlatList<DataListProps>)
+  .attrs({
+    showsVerticalScrollIndicator: false,
+    contentContainerStyle: {
+      paddingBottom: getBottomSpace()
+    }
+  })``; */

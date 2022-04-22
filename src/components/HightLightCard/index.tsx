@@ -13,28 +13,28 @@ interface Props {
   title: string;
   price: string;
   lastTransaction: string;
-  type: 'up' | 'down' | 'total';
+  modality: 'sell' | 'buy' | 'total';
 }
 
 const icon = {
-  up: 'arrow-up-circle',
-  down: 'arrow-down-circle',
+  sell: 'arrow-up-circle',
+  buy: 'arrow-down-circle',
   total: 'dollar-sign'
 }
 
-export function HightLightCard({ type, title, price, lastTransaction }: Props) {
+export function HightLightCard({ modality, title, price, lastTransaction }: Props) {
   return (
-    <Container type={type}>
+    <Container modality={modality}>
       <Header>
-        <Title type={type}>{title}</Title>
-        <Icon name={icon[type]} type={type}/>
+        <Title modality={modality}>{title}</Title>
+        <Icon name={icon[modality]} modality={modality}/>
       </Header>
       <Footer>
         <Price>
-          <Title type={type}>{price}</Title>
+          <Title modality={modality}>{price}</Title>
         </Price>
         <LastTransaction>
-          <Title type={type}>{lastTransaction}</Title>
+          <Title modality={modality}>{lastTransaction}</Title>
         </LastTransaction>
       </Footer>
     </Container>
