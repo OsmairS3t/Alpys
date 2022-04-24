@@ -71,7 +71,12 @@ export function Purchases() {
       Alert.alert('Não foi possivel cadastrar');
     }
   }
-  
+        /* const dateFormatted = Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      }).format(new Date(item.datetransaction)); */
+
   async function handleModalPurchasesOpen() {
     let sumPurchase = 0;
     const response = await AsyncStorage.getItem(keyTransaction);
@@ -79,11 +84,6 @@ export function Purchases() {
     const dataPurchaseFormatted:ITransactionProps[] = dataPurchase
     .map((item: ITransactionProps) => {
       sumPurchase += item.price;
-      const dateFormatted = Intl.DateTimeFormat('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-      }).format(new Date(item.datetransaction));
       return {
         id: item.id,
         description: item.description,
@@ -91,7 +91,7 @@ export function Purchases() {
         modalityicon: item.modalityicon,
         amount: item.amount,
         price: item.price,
-        datetransaction: dateFormatted,
+        datetransaction: item.datetransaction,
         ispaid: item.ispaid
       }
     });

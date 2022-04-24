@@ -59,7 +59,6 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
       ]
     );
   }
-
   async function deleteItem(id: string, product: string) {
     try {
       const response = await AsyncStorage.getItem(keyTransaction);
@@ -90,10 +89,9 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
       let listSalesResponse = listTransactionResponse.filter(transaction => transaction.modality!=='buy')
       listSalesResponse.map((item) => {
         if (item.id === id) {
-          (item.ispaid) ?
-            item.ispaid = false
-            :
-            item.ispaid = true
+          setIsPaid(item.ispaid);
+          setIsPaid(!isPaid);
+          item.ispaid = isPaid;
         }
       });
       setListSale(listSalesResponse);
@@ -122,8 +120,18 @@ export function ListSales({ listSale, setListSale, closeListSales, totalSale }: 
           <ListSalesTotal>
             <GroupList>
               <Description>Descrição: {item.description}</Description>
-              <Amount>Quantidade: {item.amount}  Data: {item.datetransaction}</Amount>
-              <Price>Total: {item.price}</Price>
+              <Amount>
+                Quantidade: {item.amount}    Data: {Intl.DateTimeFormat('pt-BR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: '2-digit'
+                }).format(new Date(item.datetransaction))}
+              </Amount>
+              <Price>
+                Total: {item.price.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+              })}</Price>
             </GroupList>
             <GroupButton>
               <EditButton onPress={() => handleEditSale(item.id)}>

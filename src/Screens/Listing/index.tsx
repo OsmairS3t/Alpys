@@ -18,35 +18,12 @@ import {
 } from './styles';
 
 const logotipo = '../../assets/logo_alpys.png';
-import { ITransactionProps, IHightLightProps } from '../../utils/transactions';
-
-const transactionCardItems: ITransactionProps[] = [
-    {
-        id: '1',
-        description: 'Osmair - Barra Recheada (Maracujá)',
-        modality: 'sell',
-        modalityicon: 'dollar-sign',
-        datetransaction: String(new Date().getDate()),
-        amount: 5,
-        price: '15.00',
-        ispaid: true,
-    },
-    {
-        id: '2',
-        description: 'Wanessa - Bombom (Côco)',
-        modality: 'sell',
-        modalityicon: 'dollar-sign',
-        datetransaction: String(new Date().getDate()),
-        amount: 5,
-        price: '15.00',
-        ispaid: true,
-    }
-]
+import { ITransactionProps, IHightLightProps, ITransactionViewProps } from '../../utils/transactions';
 
 export function Listing() {
     const [isLoading, setIsloading] = useState(true);
     const [highlightData, setHighlightData] = useState<IHightLightProps>({} as IHightLightProps);
-    const [objTransactions, setObjTransactions] = useState<ITransactionProps[]>([]);
+    const [objTransactions, setObjTransactions] = useState<ITransactionViewProps[]>([]);
     const theme = useTheme();
 
     function getLastTransactionDate(collection: ITransactionProps[], modality: 'buy' | 'sell') {
@@ -66,27 +43,27 @@ export function Listing() {
 
     async function loadTransactions() {
         const response = await AsyncStorage.getItem(keyTransaction);
-        const transactions = response ? JSON.parse(response) : [];
+        const transactions:ITransactionProps[] = response ? JSON.parse(response) : [];
        
         let sellTotal = 0;
         let buyTotal = 0;
 
-        const transactionsFormatted: ITransactionProps[] = transactions
+        const transactionsFormatted:ITransactionViewProps[] = transactions
             .map((item: ITransactionProps) => {
 
                 if (item.modality === 'sell') {
-                    sellTotal += Number(item.price);
+                    sellTotal += item.price;
                 } else {
-                    buyTotal += Number(item.price)
+                    buyTotal += item.price
                 }
 
-                const price = Number(item.price)
+                const price = item.price
                     .toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'
                     });
 
-                const date = Intl.DateTimeFormat('pt-BR', {
+                const dateStr = Intl.DateTimeFormat('pt-BR', {
                     day: '2-digit',
                     month: '2-digit',
                     year: '2-digit'
@@ -98,7 +75,7 @@ export function Listing() {
                     modality: item.modality,
                     modalityicon: item.modalityicon,
                     price,
-                    datetransaction: date,
+                    datetransaction: dateStr,
                     amount: item.amount,
                     ispaid: item.ispaid
                 }
@@ -188,7 +165,7 @@ export function Listing() {
                     <Content>
                         <Title>Listagem:</Title>
                         <FlatList
-                            data={transactionCardItems}
+                            data={objTransactions}
                             keyExtractor={(item) => item.id}
                             renderItem={({ item }) =>
                                 <TransactionCard data={item} />

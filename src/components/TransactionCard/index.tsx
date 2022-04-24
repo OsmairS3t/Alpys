@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITransactionProps } from '../../utils/transactions'
+import { ITransactionProps, ITransactionViewProps } from '../../utils/transactions'
 
 import { 
   Container,
@@ -21,21 +21,16 @@ interface Category {
 }
 
 interface Props {
-  data: ITransactionProps;
+  data: ITransactionViewProps;
 }
 
 export function TransactionCard({ data }: Props) {
-  const dateFormatted = Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: '2-digit'
-  }).format(data.datetransaction);
   const dataFormatted = {
     id: data.id,
     description: data.description,
     modality: data.modality,
     modalityicon: data.modalityicon,
-    datetransaction: dateFormatted,
+    datetransaction: data.datetransaction,
     amount: data.amount,
     price: data.price,
     ispaid: data.ispaid

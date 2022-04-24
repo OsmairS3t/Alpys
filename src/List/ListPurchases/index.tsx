@@ -30,7 +30,6 @@ interface Props {
 }
 
 export function ListPurchases({ listPurchase, setListPurchase, closeListPurchase, totalPurchases }: Props) {
-    console.log(listPurchase)
     const [totPurchase, setTotPurchase] = useState(totalPurchases);
     const [purchaseViewTotal, setPurchaseViewTotal] = useState(totalPurchases.toLocaleString('pt-BR', {
         style:'currency',

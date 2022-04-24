@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
@@ -12,7 +12,6 @@ import { TransactionTypeButton } from '../../components/Forms/TransactionTypeBut
 import { ProductSelectButton } from '../../components/Forms/ProductSelectButton';
 
 import { ListSales } from '../../List/ListSales';
-//import { ListSalesProps } from '../../List/ListSales';
 import { ListProductsProps } from '../../List/ListProducts';
 
 import { useForm } from 'react-hook-form';
@@ -39,24 +38,6 @@ const schema = Yup.object().shape({
   product: Yup.string().required('é necessário informar o nome do Produto'),
   amount: Yup.number().typeError('Informe um valor numérico'),
 })
-
-/* export interface ITransactionProps {
-  description: client - category - product;
-  modality: 'sell';
-  modalityicon: 'dollar-sign';
-  datetransaction: datesale;
-  price: total;
-} 
-export interface ListSalesProps {
-  id: string;
-  client: string;
-  phone: string;
-  product: string;
-  amount: string;
-  total: number;
-  ispaid: boolean;
-  datesale: string;
-}*/
 
 import { ITransactionProps } from '../../utils/transactions';
 
@@ -92,12 +73,7 @@ export function Sales() {
     let listSalesResponse: ITransactionProps[] = dataListSales.filter(transaction => transaction.modality !== 'buy');
     const dataListSalesFormatted = listSalesResponse
     .map((item: ITransactionProps) => {
-      sumSale += Number(item.price);
-      const dateFormatted = Intl.DateTimeFormat('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-      }).format(new Date(item.datetransaction));
+      sumSale += item.price;
       return {
         id: item.id,
         description: item.description,
@@ -106,7 +82,7 @@ export function Sales() {
         amount: item.amount,
         price: item.price,
         ispaid: item.ispaid,
-        datetransaction: dateFormatted
+        datetransaction: item.datetransaction
       }
     });
     setTotalSale(sumSale);

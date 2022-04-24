@@ -14,9 +14,6 @@ export const Container = styled(TouchableOpacity)<ContainerProps>`
   justify-content: center;
   border-radius: 5px;
   padding: 16px;
-  border-width: ${({ isActive }) => isActive ? 0 : 1.5}px;
-  border-style: solid;
-  border-color: ${({ theme }) => theme.colors.text};
 
   ${({ isActive }) => isActive && css`
     background-color: ${({ theme }) => theme.colors.success_light };
@@ -37,6 +34,6 @@ export const Icon = styled(MaterialIcons)<ContainerProps>`
 
 export const Title = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.title};
   font-size: ${RFValue(14)}px;
 `;
