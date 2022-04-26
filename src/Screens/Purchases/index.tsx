@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Alert, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
 import { InputForm } from '../../components/Forms/InputForm';
 import { Button } from '../../components/Forms/Button';
@@ -71,17 +71,13 @@ export function Purchases() {
       Alert.alert('Não foi possivel cadastrar');
     }
   }
-        /* const dateFormatted = Intl.DateTimeFormat('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-      }).format(new Date(item.datetransaction)); */
-
+ 
   async function handleModalPurchasesOpen() {
     let sumPurchase = 0;
     const response = await AsyncStorage.getItem(keyTransaction);
-    const dataPurchase = response ? JSON.parse(response) : [];
-    const dataPurchaseFormatted:ITransactionProps[] = dataPurchase
+    const dataPurchase:ITransactionProps[] = response ? JSON.parse(response) : [];
+    let purchaseArray:ITransactionProps[] = dataPurchase.filter(item => item.modality !== 'sell');
+    const dataPurchaseFormatted:ITransactionProps[] = purchaseArray
     .map((item: ITransactionProps) => {
       sumPurchase += item.price;
       return {
