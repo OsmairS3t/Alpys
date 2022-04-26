@@ -5,7 +5,22 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#D45C05"
+    }
   },
-  "name": "Alpys"
+  "ios": {
+    "bundleIdentifier": "com.araujodev.alpys",
+    "buildNumber": "1.0.0"
+  },
+  "name": "Alpys",
+  "android": {
+    "package": "com.araujodev.alpys",
+    "versionCode": 1
+  }
 }

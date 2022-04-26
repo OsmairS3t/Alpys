@@ -142,13 +142,6 @@ export function Products() {
               autoCapitalize='characters'
               keyboardType='numeric'
             />
-            <InputForm
-              name='photo'
-              control={control}
-              placeholder='Foto'
-              autoCapitalize='characters'
-              keyboardType='url'
-            />
           </Fields>
           <Button
             title='Cadastrar'
