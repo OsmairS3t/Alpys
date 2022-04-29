@@ -14,7 +14,8 @@ import {
     LogoTipo,
     HightLightCards,
     Content,
-    Title
+    Title,
+    TextMessageEmpty
 } from './styles';
 
 const logotipo = '../../assets/logo_alpys.png';
@@ -157,20 +158,24 @@ export function Listing() {
                         />
                         <HightLightCard
                             modality="total"
-                            title="Total"
+                            title="Saldo"
                             price={highlightData.total.price}
                             lastTransaction={highlightData.total.lastTransaction}
                         />
                     </HightLightCards>
                     <Content>
                         <Title>Listagem:</Title>
-                        <FlatList
-                            data={objTransactions}
-                            keyExtractor={(item) => item.id}
-                            renderItem={({ item }) =>
-                                <TransactionCard data={item} />
-                            }
-                        />
+                        {objTransactions.length > 0 ?  
+                            <FlatList
+                                data={objTransactions}
+                                keyExtractor={(item) => item.id}
+                                renderItem={({ item }) =>
+                                    <TransactionCard data={item} />
+                                }
+                            />
+                        :
+                         <TextMessageEmpty>Não há compras ou vendas no momento</TextMessageEmpty>
+                        }
                     </Content>
                 </>
             }

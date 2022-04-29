@@ -60,8 +60,13 @@ export const TransactionList = styled(FlatList as new () => FlatList<ITransactio
 export const Teste = styled.Text`
   font-family: ${({theme})=>theme.fonts.regular};
   color: ${({theme})=>theme.colors.shape};
+  `;
+  
+export const TextMessageEmpty = styled.Text`
+  color: ${({theme})=>theme.colors.shape};
+  font-size: ${RFValue(14)}px;
+  font-family: ${({theme})=>theme.fonts.regular};
 `;
-
 
 /* export const TransactionList = styled(FlatList as new () => FlatList<DataListProps>)
   .attrs({
