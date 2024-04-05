@@ -15,7 +15,10 @@
     },
     "android": {
       "package": "com.os3tdev.Alpys"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   },
   "ios": {
     "bundleIdentifier": "com.os3tdev.Alpys",
