@@ -18,7 +18,12 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d943f47f-6ebf-4de6-a6ce-4b250c17e020"
+      }
+    }
   },
   "ios": {
     "bundleIdentifier": "com.os3tdev.Alpys",
