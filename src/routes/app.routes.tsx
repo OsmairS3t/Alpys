@@ -10,6 +10,7 @@ import { Listing } from '../Screens/Listing'
 import { Purchases } from '../Screens/Purchases';
 import { Sales } from '../Screens/Sales';
 import { Products } from '../Screens/Products';
+import Categories from '../Screens/Categories';
 
 export function AppRoutes() {
   const theme = useTheme();
@@ -49,6 +50,19 @@ export function AppRoutes() {
           tabBarIcon: (({ size, color }) => 
             <MaterialIcons 
               name="shopping-cart"
+              size={size}
+              color={color}
+            />
+          )
+        }}
+      />
+      <Screen 
+        name="Categorias"
+        component={Categories}
+        options={{
+          tabBarIcon: (({ size, color }) => 
+            <MaterialIcons 
+              name="category"
               size={size}
               color={color}
             />
