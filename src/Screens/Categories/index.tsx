@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Alert, Modal, TouchableWithoutFeedback, Keyboard, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import { keyCategory } from '../../utils/keyStorage'
@@ -12,6 +12,7 @@ import { HeaderScreen } from '../../components/HeaderScreen';
 import { Button } from '../../components/Forms/Button';
 import { InputForm } from '../../components/Forms/InputForm';
 import { FormDataProps } from '../../components/Forms/InputForm';
+import { ListCategories, ListCategoriesProps } from '../../List/ListCategories';
 
 import {
   Container,
@@ -22,10 +23,9 @@ import {
   Fields,
   TitleForm
 } from './styles';
-import { ListCategories, ListCategoriesProps } from '../../List/ListCategories';
 
 const schema = Yup.object().shape({
-  category: Yup.string().required('O nome da categoria é necessário'),
+  name: Yup.string().required('O nome da categoria é necessário'),
 })
 
 export default function Categories() {
@@ -58,9 +58,8 @@ export default function Categories() {
   async function handleSubmitCategory(form: FormDataProps) {
     const dataCategory = {
       id: uuid.v4(),
-      category: form.name
+      name: form.name
     }
-    console.log(dataCategory)
     try {
       const data = await AsyncStorage.getItem(keyCategory);
       const currentData = data ? JSON.parse(data) : [];  
@@ -69,7 +68,7 @@ export default function Categories() {
         dataCategory
       ]
       await AsyncStorage.setItem(keyCategory, JSON.stringify(dataFormatted));
-      Alert.alert('Categoria cadastrada com sucesso!', JSON.stringify(dataFormatted));
+      Alert.alert('Categoria cadastrada com sucesso!');
       // reset();
     } catch (error) {
       console.log(error);

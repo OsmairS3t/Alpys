@@ -1,5 +1,5 @@
-import React from 'react';
-import { Alert, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Button, FlatList, Modal, Pressable } from 'react-native';
 import { HeaderScreen } from '../../components/HeaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { keyCategory } from '../../utils/keyStorage';
@@ -15,6 +15,7 @@ import {
     DeleteButton,
     IconDelete,
 } from './styles';
+import EditCategory from '../../Screens/Categories/edit';
 
 export interface ListCategoriesProps {
     id: string;
@@ -28,6 +29,13 @@ interface Props {
 }
 
 export function ListCategories({ listCategory, setListCategory, closeListCategory }: Props) {
+    const [cat, setCat] = useState<ListCategoriesProps>({id:'',name:''})
+    const [isModalEdit, setIsModalEdit] = useState(false)
+
+    function handleModalEdit(category: ListCategoriesProps) {
+        setIsModalEdit(!isModalEdit)
+        setCat(category)
+    }
 
     function handleDeleteCategory(id: string, name: string) {
         Alert.alert(
@@ -64,6 +72,10 @@ export function ListCategories({ listCategory, setListCategory, closeListCategor
         }
     }
 
+    function closeEditCategory() {
+        setIsModalEdit(false);
+    }
+
     return (
         <Container>
             <HeaderScreen />
@@ -80,13 +92,18 @@ export function ListCategories({ listCategory, setListCategory, closeListCategor
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <ListCategoryTotal>
-                        <CategoryName>({item.name})</CategoryName>
+                        <Pressable onPress={() => handleModalEdit(item)}>
+                            <CategoryName>{item.name}</CategoryName>
+                        </Pressable>
                         <DeleteButton onPress={() => handleDeleteCategory(item.id, item. name)}>
                             <IconDelete name="trash-2" size={20}/>
                         </DeleteButton>
                     </ListCategoryTotal>
                 )}
             />
+            <Modal visible={isModalEdit}>
+                <EditCategory closeEditCategory={closeEditCategory} category={cat} />
+            </Modal>
         </Container>
     )
 }

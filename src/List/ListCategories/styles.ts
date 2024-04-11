@@ -35,6 +35,7 @@ export const Icon = styled(Feather)`
 export const ListCategoryTotal = styled.View`
   padding: 20px 24px;
   flex-direction: row;
+  justify-content: space-between;
   border-bottom-width: 1px;
   border-color: ${({ theme })=> theme.colors.text};
   border-style: solid;
