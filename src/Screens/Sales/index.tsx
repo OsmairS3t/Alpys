@@ -39,7 +39,7 @@ const schema = Yup.object().shape({
   amount: Yup.number().typeError('Informe um valor numérico'),
 })
 
-import { ITransactionProps } from '../../utils/transactions';
+import { ITransactionProps } from '../../utils/interface';
 
 export function Sales() {
   const [totalSale, setTotalSale] = useState(0);

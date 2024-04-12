@@ -7,9 +7,11 @@ interface ModalityProps {
 }
 
 export const Container = styled.View<ModalityProps>`
+  flex-direction: column;
+  justify-content: space-between;
   background-color: ${({ theme, modality }) => 
   modality === 'total' ? theme.colors.secondary : theme.colors.shape};
-  width: ${RFValue(300)}px;
+  width: ${RFValue(315)}px;
   border-radius: 10px;
   padding: 10px;
   margin-right: 16px;
@@ -33,8 +35,7 @@ export const Footer = styled.View``;
 export const Price = styled.Text`
   font-family: ${({ theme }) => theme.fonts.bold};
   color: ${({ theme }) => theme.colors.background};
-  font-size: ${RFValue(20)}px;
-  margin-bottom: 5px;
+  font-size: ${RFValue(22)}px;
 `;
 
 export const LastTransaction = styled.Text`

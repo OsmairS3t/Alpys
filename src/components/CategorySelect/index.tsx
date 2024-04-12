@@ -2,6 +2,7 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import { Button } from '../Forms/Button';
 import { categories } from '../../utils/categories';
+import { ICategory } from '../../utils/interface';
 
 import { 
   Container,
@@ -14,14 +15,14 @@ import {
   Footer
  } from './styles';
 
-interface Category {
-  key: string;
-  name: string;
-}
+// interface Category {
+//   id: string;
+//   name: string;
+// }
 
 interface ProductProps {
-  category: Category;
-  setCategory: (category: Category) => void;
+  category: ICategory;
+  setCategory: (category: ICategory) => void;
   closeSelectCategory: () => void;
 }
 
@@ -31,7 +32,7 @@ export function CategorySelect({
   closeSelectCategory
 }: ProductProps) {
 
-  function handleCategorySelect(category: Category) {
+  function handleCategorySelect(category: ICategory) {
     setCategory(category);
   }
 
@@ -44,11 +45,11 @@ export function CategorySelect({
       <FlatList 
         data={categories}
         style={{ flex: 1, width: '100%'}}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Category
             onPress={() => handleCategorySelect(item)}
-            isActive={category.key === item.key}
+            isActive={category.id === item.id}
           >
             <Icon name={item.icon} />
             <Name>{item.name}</Name>

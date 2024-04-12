@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Modal, TouchableWithoutFeedback, Keyboard, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import { keyCategory } from '../../utils/keyStorage'
 
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Input } from '../../components/Forms/Input';
 
 import { HeaderScreen } from '../../components/HeaderScreen';
 import { Button } from '../../components/Forms/Button';
-import { InputForm } from '../../components/Forms/InputForm';
-import { FormDataProps } from '../../components/Forms/InputForm';
 import { ListCategories, ListCategoriesProps } from '../../List/ListCategories';
+import { ICategory } from '../../utils/interface';
 
 import {
   Container,
@@ -21,7 +21,8 @@ import {
   TitleButtonList,
   Form,
   Fields,
-  TitleForm
+  TitleForm,
+  ErrorMessage
 } from './styles';
 
 const schema = Yup.object().shape({
@@ -29,37 +30,44 @@ const schema = Yup.object().shape({
 })
 
 export default function Categories() {
-  const { handleSubmit, control, reset, formState: { errors }} = useForm<FormDataProps>({resolver: yupResolver(schema)});
   const [listCategories, setListCategories] = useState<ListCategoriesProps[]>([]);
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
+  const { 
+    handleSubmit, 
+    control, 
+    reset, 
+    formState: { 
+      errors 
+    }} = useForm<ICategory>({
+      resolver: yupResolver(schema)
+    });
   
   function closeModalCategory() {
     setIsModalOpenCategory(false);
   }
 
-  function openModalCategory() {
-    setIsModalOpenCategory(true);
-  }
-
   async function handleModalCategoryOpen() {
     const response = await AsyncStorage.getItem(keyCategory);
     const dataCategory = response ? JSON.parse(response) : [];
-    const dataCategoryFormatted: ListCategoriesProps[] = dataCategory
-    .map((item: ListCategoriesProps) => {
+    const dataCategoryFormatted: ICategory[] = dataCategory
+    .map((item: ICategory) => {
       return {
         id: item.id,
         name: item.name,
+        icon: item.icon
       }
     });
     setListCategories(dataCategoryFormatted);
     setIsModalOpenCategory(true);
   }
   
-  async function handleSubmitCategory(form: FormDataProps) {
+  async function handleSubmitCategory(form: ICategory) {
     const dataCategory = {
       id: uuid.v4(),
-      name: form.name
+      name: form.name,
+      icon: form.icon
     }
+    console.log(dataCategory)
     try {
       const data = await AsyncStorage.getItem(keyCategory);
       const currentData = data ? JSON.parse(data) : [];  
@@ -69,7 +77,7 @@ export default function Categories() {
       ]
       await AsyncStorage.setItem(keyCategory, JSON.stringify(dataFormatted));
       Alert.alert('Categoria cadastrada com sucesso!');
-      // reset();
+      reset();
     } catch (error) {
       console.log(error);
       Alert.alert('Não foi possivel salvar');
@@ -89,14 +97,42 @@ export default function Categories() {
 
         <Form>
           <Fields>
-          <InputForm
-              name='name'
+            <Controller
               control={control}
-              error={errors.name && errors.name.message}
-              placeholder='Categoria'
-              autoCapitalize='characters'
-              autoCorrect={false}
+              rules={{
+                maxLength: 100,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Categoria"
+                  autoCapitalize='characters'
+                  autoCorrect={false}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="name"
               />
+              {errors.name && <ErrorMessage>errors.name.message</ErrorMessage>}
+            <Controller
+              control={control}
+              rules={{
+                maxLength: 100,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Icone"
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="icon"
+              />
+              {errors.name && <ErrorMessage>errors.name.message</ErrorMessage>}
           </Fields>
           <Button
             title='Cadastrar'

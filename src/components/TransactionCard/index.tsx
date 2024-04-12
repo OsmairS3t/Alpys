@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITransactionProps, ITransactionViewProps } from '../../utils/transactions'
+import { ITransactionViewProps } from '../../utils/interface'
 
 import { 
   Container,
@@ -47,7 +47,7 @@ export function TransactionCard({ data }: Props) {
           {dataFormatted.modality === 'buy' && '- ' }
           {dataFormatted.price}
         </Price>
-        <Amount>{dataFormatted.amount}</Amount>
+        <Amount>Qtd: {dataFormatted.amount}</Amount>
       </Content>
 
       <Footer>

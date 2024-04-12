@@ -39,8 +39,9 @@ export function Products() {
   const [isModalOpenCategory, setIsModalOpenCategory] = useState(false);
   const [isModalOpenProducts, setIsModalOpenProducts] = useState(false);
   const [category, setCategory] = useState({
-    key: 'category',
-    name: 'Tipo'
+    id: 'category',
+    name: 'Tipo',
+    icon: 'image'
   });
   const { handleSubmit, control, reset, formState: { errors }} = useForm<FormDataProps>({resolver: yupResolver(schema)});
 
@@ -78,7 +79,7 @@ export function Products() {
   }
 
   async function handleSubmitProduct(form: FormDataProps) {
-    if (category.key === 'category')
+    if (category.id === 'category')
       return Alert.alert('Selecione o tipo de produto.');
     
     const dataProducts = {
@@ -99,8 +100,9 @@ export function Products() {
       await AsyncStorage.setItem(keyProduct, JSON.stringify(dataFormatted));
       Alert.alert('Produto cadastrado com sucesso!');
       setCategory({
-        key: 'category',
-        name: 'Tipo'
+        id: 'category',
+        name: 'Tipo',
+        icon: 'image'
       })
       reset();
     } catch (error) {

@@ -34,4 +34,8 @@ export const TitleForm = styled.Text`
   color: ${({ theme }) => theme.colors.light};
   font-size: ${RFValue(25)}px;
   margin: 20px 0;
+  `;
+
+export const ErrorMessage = styled.Text`
+  color: ${({ theme }) => theme.colors.attention};
 `;

@@ -14,6 +14,8 @@ import {
   Footer
  } from './styles';
 
+import { IProduct } from '../../utils/interface';
+
 interface ProductProps {
     id: string;
     category: string;

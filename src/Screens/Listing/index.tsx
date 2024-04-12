@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ActivityIndicator, FlatList } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, Alert } from 'react-native';
 import { useTheme } from 'styled-components';
 import { useFocusEffect } from '@react-navigation/native';
 import { HightLightCard } from '../../components/HightLightCard';
@@ -10,8 +10,6 @@ import { keyTransaction } from '../../utils/keyStorage';
 import {
     LoadContainer,
     Container,
-    Header,
-    LogoTipo,
     HightLightCards,
     Content,
     Title,
@@ -20,6 +18,7 @@ import {
 
 const logotipo = '../../assets/logo_alpys.png';
 import { ITransactionProps, IHightLightProps, ITransactionViewProps } from '../../utils/transactions';
+import { HeaderScreen } from '../../components/HeaderScreen';
 
 export function Listing() {
     const [isLoading, setIsloading] = useState(true);
@@ -122,6 +121,9 @@ export function Listing() {
         setIsloading(false);
     }
 
+    function handleDetailTransaction(id: string) {
+        Alert.alert('Id: ', id)
+    }
     useEffect(() => {
         loadTransactions();
     }, []);
@@ -140,9 +142,7 @@ export function Listing() {
                     />
                 </LoadContainer> :
                 <>
-                    <Header>
-                        <LogoTipo width={207} source={require(logotipo)} />
-                    </Header>
+                    <HeaderScreen />
                     <HightLightCards>
                         <HightLightCard
                             modality="sell"
@@ -163,6 +163,7 @@ export function Listing() {
                             lastTransaction={highlightData.total.lastTransaction}
                         />
                     </HightLightCards>
+                    
                     <Content>
                         <Title>Listagem:</Title>
                         {objTransactions.length > 0 ?  
@@ -170,7 +171,9 @@ export function Listing() {
                                 data={objTransactions}
                                 keyExtractor={(item) => item.id}
                                 renderItem={({ item }) =>
+                                  <Pressable onPress={() => handleDetailTransaction(item.id)}>
                                     <TransactionCard data={item} />
+                                  </Pressable>
                                 }
                             />
                         :

@@ -10,5 +10,5 @@ export const Container = styled(TextInput)`
   font-family: ${({ theme }) => theme.fonts.regular};
   color: ${({ theme }) => theme.colors.primary};
   border-radius: 5px;
-  margin-bottom: 8px;
+  margin-top: 8px;
 `;

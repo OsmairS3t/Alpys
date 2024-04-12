@@ -29,10 +29,10 @@ export function HightLightCard({ modality, title, price, lastTransaction }: Prop
         <Title modality={modality}>{title}</Title>
         <Icon name={icon[modality]} modality={modality}/>
       </Header>
+      <Price>
+        <Title modality={modality}>{price}</Title>
+      </Price>
       <Footer>
-        <Price>
-          <Title modality={modality}>{price}</Title>
-        </Price>
         <LastTransaction>
           <Title modality={modality}>{lastTransaction}</Title>
         </LastTransaction>

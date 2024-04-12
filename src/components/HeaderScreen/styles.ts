@@ -6,10 +6,12 @@ export const Container = styled.View`
   height: ${RFValue(100)}px;
   background-color: ${({ theme }) => theme.colors.secondary};
   align-items: center;
-  padding-top: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const ImgLogo = styled.Image`
-  width: 137px;
-  height: 52px;
+  width: 150px;
+  height: 65px;
 `;
