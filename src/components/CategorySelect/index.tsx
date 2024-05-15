@@ -15,11 +15,6 @@ import {
   Footer
  } from './styles';
 
-// interface Category {
-//   id: string;
-//   name: string;
-// }
-
 interface ProductProps {
   category: ICategory;
   setCategory: (category: ICategory) => void;
